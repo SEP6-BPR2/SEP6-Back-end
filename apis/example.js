@@ -1,4 +1,3 @@
-
 const express = require('express');
 const router = express.Router();
 const exampleService = require('../services/exampleService');
