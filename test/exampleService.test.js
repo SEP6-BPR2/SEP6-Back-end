@@ -14,6 +14,6 @@ describe("Example service testing", () => {
 
         const data = await exampleService.getExample();
 
-        assert.equal(data, "test wors")
+        assert.equal(data, "test worked")
     });
 })

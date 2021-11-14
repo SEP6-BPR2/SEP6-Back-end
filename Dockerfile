@@ -1,19 +1,19 @@
-# Image comes with npm installed
 FROM node:latest
 
-ENV NODE_ENV production
-
 WORKDIR /app
-# COPY package-lock.json .
+
 COPY package.json /app/
+COPY package-lock.json /app/
+
 RUN npm install
-RUN npm ci --only=production && npm cache clean --force
-RUN npm cache clean --force
 COPY . /app/
 
-# RUN npm ci --only=production && npm cache clean --force
+# if at least one test fails it will crash the build
+RUN npm test
 
-# This is the port of the server
+RUN npm ci --production
+RUN npm cache clean --force
+
 EXPOSE 9000
 
 CMD ["npm", "start"]

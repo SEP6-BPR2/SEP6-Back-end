@@ -11,9 +11,8 @@ function initializeRoutes(app){
 
 function initializeMiddleware(app){
     app.use(express.json());
-    // app.use(require("cors"));
+    app.use(require('./middleware/exampleMiddleware'));
 }
-
 
 //Start server
 const app = express();
