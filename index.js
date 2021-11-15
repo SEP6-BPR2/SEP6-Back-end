@@ -3,6 +3,7 @@ require('dotenv').config(); // Initialize env
 
 function initializeRoutes(app){
     app.use("/example", require("./apis/example"));
+    app.use("/movies", require("./apis/seeMovies"));
 
     app.get("/", (req, res) => {
         res.send("SEP6 BACKEND WORKS!");

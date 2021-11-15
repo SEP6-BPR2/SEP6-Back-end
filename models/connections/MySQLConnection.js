@@ -1,18 +1,31 @@
-var mysql = require('mysql');
+const mysql = require('mysql');
 
-var connection = mysql.createConnection({
+let connection;
+connection = mysql.createConnection({
     host     : process.env.GCPDBHOST,
     user     : process.env.GCPDBUSER,
     password : process.env.GCPDBPASSWORD,
     database : process.env.GCPDBDATABASE
 });
+
+connection.connect((err) => {
+    if(err){
+        throw err;
+    }
+    console.log("MySql Connected...")
+});
  
 module.exports.connection = connection;
 
-module.exports.query = async (queryString) => {
+
+//Uses prepared statements by replacing the ? in the queryString with values, in order.
+//queryString = 'SELECT * FROM `books` WHERE `author` = ?', 
+//values = ['David']
+//IMPORTANT - for values to be integers in query string after combining, they have to be actual integers. 
+//If they are string numbers they will have qoutes on them.
+module.exports.query = async (queryString, values) => {
     return new Promise((resolve, reject) => {
-        connection.connect();
-        connection.query(queryString, function (error, elements) {
+        connection.query(queryString, values, function (error, elements) {
             if(error){
                 return reject(error);
             }
@@ -20,6 +33,3 @@ module.exports.query = async (queryString) => {
         });
     });
 };
-
-
-
