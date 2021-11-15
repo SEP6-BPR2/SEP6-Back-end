@@ -1,19 +1,23 @@
 const mysql = require('mysql');
 
 let connection;
-connection = mysql.createConnection({
-    host     : process.env.GCPDBHOST,
-    user     : process.env.GCPDBUSER,
-    password : process.env.GCPDBPASSWORD,
-    database : process.env.GCPDBDATABASE
-});
-
-connection.connect((err) => {
-    if(err){
-        throw err;
-    }
-    console.log("MySql Connected...")
-});
+if(process.env.GCPDBUSER !== "testing"){
+    connection = mysql.createConnection({
+        host     : process.env.GCPDBHOST,
+        user     : process.env.GCPDBUSER,
+        password : process.env.GCPDBPASSWORD,
+        database : process.env.GCPDBDATABASE
+    });
+    
+    connection.connect((err) => {
+        if(err){
+            throw err;
+        }
+        console.log("MySql Connected...")
+    });
+}else{
+    connection = null;
+}
  
 module.exports.connection = connection;
 
