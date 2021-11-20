@@ -6,18 +6,20 @@ module.exports.getAllMoviesWithSorting = async (sorting, number, offset, categor
     const order = decending == "1"? "DESC": "ASC";
     
 
-    const getGroupIdSubquery = " SELECT genre.genreId FROM genre " +
-    "WHERE genre.genreName = ? ";
+    // const getGroupIdSubquery = " SELECT genre.genreId FROM genre " +
+    // "WHERE genre.genreName = ? ";
     
     //Change to inner join later
     const data = await mysql.query(
         "SELECT movies.id, movies.title, movies.posterURL as poster FROM movies " +
-        "INNER JOIN movieToGenre " +
-        "ON movies.id = movieToGenre.movieId " +
-        "AND movieToGenre.genreId in ("+ getGroupIdSubquery +") " +
+        // "INNER JOIN movieToGenre " +
+        // "ON movies.id = movieToGenre.movieId " +
+        // "AND movieToGenre.genreId in ("+ getGroupIdSubquery +") " +
         "ORDER BY ? "+ order +" " +
         "LIMIT ?,? ",
-        [category, sorting, parseInt(offset), parseInt(number), ]
+        // [category, sorting, parseInt(offset), parseInt(number)]
+        [sorting, parseInt(offset), parseInt(number)]
+
     );
 
     return data;
