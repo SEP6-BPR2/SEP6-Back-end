@@ -1,51 +1,134 @@
 const mysql = require('./connections/MySQLConnection');
-require('dotenv').config(); // Initialize env
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
-module.exports.getAllMoviesWithSorting = async (sorting, number, offset, category) => {
+module.exports.getAllMoviesWithSorting = async (sorting, number, offset, category, decending) => {
+
+    const order = decending == "1"? "DESC": "ASC";
+    
+
+    const getGroupIdSubquery = " SELECT genre.genreId FROM genre " +
+    "WHERE genre.genreName = ? ";
+    
+    //Change to inner join later
     const data = await mysql.query(
-        "SELECT * FROM movies " +
-        "ORDER BY ? DESC " +
+        "SELECT movies.id, movies.title, movies.posterURL as poster FROM movies " +
+        "INNER JOIN movieToGenre " +
+        "ON movies.id = movieToGenre.movieId " +
+        "AND movieToGenre.genreId in ("+ getGroupIdSubquery +") " +
+        "ORDER BY ? "+ order +" " +
         "LIMIT ?,? ",
-        [sorting, parseInt(offset), parseInt(number), ]
+        [category, sorting, parseInt(offset), parseInt(number), ]
     );
+
     return data;
 }
 
-
-module.exports.getMoreDataForMovie = async (id) => {
-    //The id string must be converted to propper length and format
-    const stringId = convertIdForAPI(id)
-    const response = await fetch(process.env.EXTERNAL_MOVIE_DB_BASE_URL+ "?i=" + stringId + "&apikey=" + process.env.EXTERNAL_MOVIE_DB_KEY );
-    const body = await response.text();
-    const object = JSON.parse(body);
-
-    let data = {
-        description: object.Plot,
-        poster: object.Poster,
-        genres:[
-            ...object.Genre.split(", ")
-        ],
-        director: object.Director,
-        actors: [
-            ...object.Actors.split(", ")
-        ],
-        ratings: [
-            {
-                imdbRating: object.imdbRating,
-                imdbVotes: object.imdbVotes
-            },
-            ...object.Ratings
-        ],
-        runtime: object.Runtime,
-    }
-    return data;
+module.exports.getMovieByIDThirdParty = async (id) => {
+    return await fetch(process.env.EXTERNAL_MOVIE_DB_BASE_URL+ "?i=" + id + "&apikey=" + process.env.EXTERNAL_MOVIE_DB_KEY );
 }
 
-//The id has to be a certain length. If it is too short after adding tt 0's need to be added to fill space.
-const idLength = 9;
-function convertIdForAPI(id){
-    let idString = id.toString();
-    idString = "tt" + ("0".repeat(idLength - 2 - idString.length)) + idString;
-    return idString
+module.exports.updateMovie = async (movie) => {
+    await mysql.query(
+        "UPDATE movies " +
+        "SET movies.posterURL = ?, " +
+        "movies.description = ?, " +
+        "movies.runtime = ?, " +
+        "movies.imdbRating = ? , " +
+        "movies.imdbVotes = ? , " +
+        "movies.lastUpdated = NOW() " +
+        "WHERE movies.id = ? ",
+        [
+            movie.poster, 
+            movie.description, 
+            movie.runtime, 
+            movie.imdbRating, 
+            movie.imdbVotes, 
+            movie.id
+        ]
+    );
+}
+
+module.exports.insertGenre = async (name) => {
+    return await mysql.query(
+        "INSERT INTO genre (genreName) VALUES (?) ",
+        [name]
+    );
+}
+
+module.exports.getGenreByName = async (name) => {
+    return await mysql.query(
+        "SELECT * FROM genre WHERE genre.genreName = ?",
+        [name]
+    );
+}
+
+module.exports.insertMovieToGenre = async (movieId, genreId) => {
+    return await mysql.query(
+        "INSERT INTO movieToGenre (movieId, genreId) VALUES (?, ?) ",
+        [movieId, genreId]
+    );
+}
+
+module.exports.getPersonByName = async (firstName, lastName) => {
+    return await mysql.query(
+        "SELECT * FROM person WHERE person.firstName = ? AND person.lastName = ?",
+        [firstName, lastName]
+    );
+}
+
+module.exports.insertPerson = async (firstName, lastName) => {
+    return await mysql.query(
+        "INSERT INTO person (firstName, lastName) VALUES (?, ?) ",
+        [firstName, lastName]
+    );
+}
+
+module.exports.insertMovieToPerson = async (movieId, personId, roleId) => {
+    return await mysql.query(
+        "INSERT INTO movieToPerson (movieId, personId, roleId) VALUES (?, ?, ?) ",
+        [movieId, personId, roleId]
+    );
+}
+
+module.exports.getMovieByMovieId = async (movieId) => {
+    return await mysql.query(
+        "SELECT * FROM movies " +
+        "WHERE id = ? ",
+        [movieId]
+    );
+}
+
+module.exports.getPeopleByMovieId = async (movieId) => {
+    return await mysql.query(
+        "SELECT CONCAT(person.firstName, ' ', person.lastName) as name, role.roleName " +
+        "FROM movieToPerson " +
+        "INNER JOIN person " +
+        "ON movieToPerson.personId = person.personId " +
+        "INNER JOIN role " +
+        "ON movieToPerson.roleId = role.roleId " +
+        "WHERE movieToPerson.movieId = ? ",
+        [movieId]
+    );
+}
+
+module.exports.getGenresByMovieId = async (movieId) => {
+    return await mysql.query(
+        "SELECT genre.genreName " +
+        "FROM movieToGenre " +
+        "INNER JOIN genre " +
+        "ON movieToGenre.genreId = genre.genreId " +
+        "WHERE movieToGenre.movieId = ? ",
+        [movieId]
+    );
+}
+
+module.exports.getMoviesByPartialString = async (movieName, number, sorting) => {
+    return await mysql.query(
+        "SELECT id, title, year, posterURL " +
+        "FROM movies where title like ? " +
+        "ORDER BY ? DESC " +
+        "LIMIT ? ",
+        [movieName + "%", sorting, parseInt(number)]
+    );
+    
 }

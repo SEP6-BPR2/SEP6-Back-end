@@ -2,6 +2,7 @@ const mysql = require('mysql');
 
 let connection;
 if(process.env.GCPDBUSER !== "testing"){
+    //If getting slow switch to connection pools.
     connection = mysql.createConnection({
         host     : process.env.GCPDBHOST,
         user     : process.env.GCPDBUSER,

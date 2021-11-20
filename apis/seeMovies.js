@@ -3,42 +3,33 @@ const router = express.Router();
 const moviesService = require('../services/moviesService');
 
 /**
- * @swagger
- * /movies/{sorting}/{number}/{offset}/{category}:
- *  get:
- *      summary: Retrieve list of movies. 
- *      parameters:
- *        - in: sorting
- *          name: sorting
- *          required: true
- *          description: Existing parameter in the movie object. Ex. tile
- *          schema:
- *              type: string
- *        - in: number
- *          name: number
- *          required: true
- *          description: Number of movies to retrieve.
- *          schema:
- *              type: integer
- *        - in: offset
- *          name: offset
- *          required: true
- *          description: Number of movies to retrieve.
- *          schema:
- *              type: integer
- *        - in: category
- *          name: category
- *          required: true
- *          description: Category which the movies have to match.
- *          schema:
- *              type: string
- * 
- *      responses:
- *          200:
- *              description: List of movies according to specification.
+ * Get list of movies
+ * @param sorting - string, what parameter in movie object to sort by
+ * @param number - int, how many movies to return
+ * @param offset - int, how many movies to skip by
+ * @param category - string, how many movies to return
+ * @param decending - 1 or 0, 1 - sort and show decending, 0 - sort and show ascending 
  */
-router.get("/:sorting/:number/:offset/:category", async (req, res) => {
-    res.send(await moviesService.getMovies(req.params.sorting, req.params.number, req.params.offset, req.params.category));
+router.get("/:sorting/:number/:offset/:category/:decending", async (req, res) => {
+    res.send(await moviesService.getMovies(req.params.sorting, req.params.number, req.params.offset, req.params.category, req.params.decending));
+});
+
+/**
+ * Get more info about specific movie
+ * @param movieId - string, id of the movie 
+ */
+router.get("/details/:movieId", async (req, res) => {
+    res.send(await moviesService.getMovieDetails(req.params.movieId));
+});
+
+/**
+ * Search for movie by partial string or full string
+ * @param sorting - string, what parameter in movie object to sort by
+ * @param number - int, how many movies to return
+ * @param movieName - string, partial or full string of movie
+ */
+router.get("/search/:movieName/:number/:sorting", async (req, res) => {
+    res.send(await moviesService.getBySearch(req.params.movieName, req.params.number, req.params.sorting));
 });
 
 module.exports = router;
