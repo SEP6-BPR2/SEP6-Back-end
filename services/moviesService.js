@@ -114,32 +114,46 @@ async function updateDatabaseMovie(movie){
 
 module.exports.getMovieDetails = async (movieId) => {
     let movie = await moviesModel.getMovieByMovieId(movieId)
-    movie = movie[0]
+    movie = movie[0];
 
-    const people = await moviesModel.getPeopleByMovieId(movieId);
-
-    const genres = await moviesModel.getGenresByMovieId(movieId);
-
-    let director = {};
-    let actors = []
-    let genresArray = []
-    genres.map((genre) => genresArray.push(genre.genreName));
-
-    for(let i = 0; i <= people.length ; i++){
-        if (people[i].roleName == "Director"){
-            director = people[i].name
-            break;
-        }else{
-            actors.push(people[i].name)
+    if(movie.posterURL == null){
+        let otherData = await getMoreDataForMovieFromThirdParty(movie["id"])
+        const newMovie = {
+            ...movie,
+            ...otherData
         }
-    }
+        
+        delete newMovie.posterURL
+        
+        updateDatabaseMovie(newMovie)
+        return newMovie
+    }else{
+        movie = movie[0]
 
-    return {
-        ...movie,
-        director: director,
-        actors: actors,
-        genres: genresArray
-    };
+        const people = await moviesModel.getPeopleByMovieId(movieId);
+    
+        const genres = await moviesModel.getGenresByMovieId(movieId);
+    
+        let director = {};
+        let actors = []
+        let genresArray = []
+        genres.map((genre) => genresArray.push(genre.genreName));
+    
+        for(let i = 0; i <= people.length ; i++){
+            if (people[i].roleName == "Director"){
+                director = people[i].name
+                break;
+            }else{
+                actors.push(people[i].name)
+            }
+        }
+        return {
+            ...movie,
+            director: director,
+            actors: actors,
+            genres: genresArray
+        };
+    }
 }
 
 

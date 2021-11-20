@@ -126,7 +126,7 @@ module.exports.getGenresByMovieId = async (movieId) => {
 
 module.exports.getMoviesByPartialString = async (movieName, number, sorting) => {
     return await mysql.query(
-        "SELECT id, title, year, posterURL " +
+        "SELECT id, title, year, posterURL as poster " +
         "FROM movies where title like ? " +
         "ORDER BY ? DESC " +
         "LIMIT ? ",
