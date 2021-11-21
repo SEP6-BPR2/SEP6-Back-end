@@ -2,13 +2,17 @@
 Backend application for SEP6
 
 # Setup
-To use this you need to have ".env" and "./terraform/GCPAccount.json" files defined. GCPAccount is a cloud service account used for terraform.
+To use this you need to have ".env" and "./terraform/GCPAccount.json" files defined. GCPAccount is a cloud service account used for terraform. 
+
+We are using OMDB for third party movie access.
 
 File ".env" contents:<br/>
   GCPDBHOST=0<br/>
   GCPDBPORT=0<br/>
   GCPDBPASSWORD=0<br/>
   GCPDBUSER=0<br/>
+  EXTERNAL_MOVIE_DB_KEY=0<br/>
+  EXTERNAL_MOVIE_DB_BASE_URL=0<br/>
 
 File "GCPAccount.json" contents:
   {<br/>

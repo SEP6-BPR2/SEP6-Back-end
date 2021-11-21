@@ -17,4 +17,11 @@ RUN npm cache clean --force
 
 EXPOSE 9000
 
+# RUN wget http://download.redis.io/redis-stable.tar.gz
+# RUN tar xvzf redis-stable.tar.gz
+# RUN cd redis-stable
+# RUN apt-get install -y redis-server
+# RUN redis-server
+# RUN cd ..
+
 CMD ["npm", "start"]

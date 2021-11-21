@@ -1,17 +1,28 @@
-const e = require('express');
 const moviesModel = require('../models/moviesModel');
 
-module.exports.getMovies = async (sorting, number, offset, category, decending) => {
-    let movies = await moviesModel.getAllMoviesWithSorting(sorting, number, offset, category, decending)
 
-    for(let i = 0; i<movies.length; i++){
-        if(movies[i].poster == null){
-            let otherData = await getMoreDataForMovieFromThirdParty(movies[i]["id"])
+module.exports.getListOfMovies = async (sorting, number, offset, category, decending, search) => {
+    let data = await getMovies(sorting, number, offset, category, decending, search)
+    if(data.length ==  0){
+        throw Error("Not implemented")
+        //Find by genre from third party instead
+    }
+    
+    return data;
+}
+async function getMovies(sorting, number, offset, category, decending, search) {
+    let movies = await moviesModel.getAllMoviesWithSorting(sorting, parseInt(number), parseInt(offset), category, decending, search)
+
+    //Some movies are not updated. Check that all parameters are updated before sending.
+    for(let i = 0; i< movies.length; i++){
+        if(movies[i].poster == null || movies[i].description == null){
+            let otherData = await getMoreDataForMovieFromThirdParty(movies[i].id)
             const newMovie = {
                 ...movies[i],
                 ...otherData
             }
             movies[i].poster = otherData.poster
+            movies[i].description = otherData.description.substring(0, 99);
             
             updateDatabaseMovie(newMovie)
         }
@@ -38,7 +49,7 @@ async function getMoreDataForMovieFromThirdParty(movieId){
         ],
         imdbRating: object.imdbRating,
         imdbVotes: object.imdbVotes,
-        runtime: object.Runtime,
+        runtime: object.Runtime
     }
     return data;
 }
@@ -128,7 +139,6 @@ module.exports.getMovieDetails = async (movieId) => {
         updateDatabaseMovie(newMovie)
         return newMovie
     }else{
-        movie = movie[0]
 
         const people = await moviesModel.getPeopleByMovieId(movieId);
     
@@ -157,8 +167,14 @@ module.exports.getMovieDetails = async (movieId) => {
 }
 
 
-module.exports.getBySearch = async (movieName, number, sorting) => {
-    return await moviesModel.getMoviesByPartialString(movieName, number, sorting)
+module.exports.getBySearch = async (sorting, number, offset, category, decending, search) => {
+    let data = await getMovies(sorting, number, offset, category, decending, search)
+    if(data.length ==  0){
+        throw Error("Not implemented")
+        //Search in third party instead
+    }
+    
+    return data;
 }
 
 

@@ -11,8 +11,7 @@
         "express": "^4.17.1",
         "mysql": "^2.18.1",
         "node-fetch": "^3.1.0",
-        "swagger-jsdoc": "^6.1.0",
-        "swagger-ui-express": "^4.1.6"
+        "redis": "^3.1.2"
     },
     "devDependencies": {
         "mocha": "^9.1.3",

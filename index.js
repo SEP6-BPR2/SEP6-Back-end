@@ -1,20 +1,16 @@
 const express = require('express');
-const swaggerJsDoc = require('swagger-jsdoc');
-const swaggerUi = require('swagger-ui-express');
+// const swaggerJsDoc = require('swagger-jsdoc');
+// const swaggerUi = require('swagger-ui-express');
+        // "swagger-jsdoc": "^6.1.0",
+        // "swagger-ui-express": "^4.1.6"
 
-const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
+// const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 require('dotenv').config(); // Initialize env
 
 function initializeRoutes(app){
     app.use("/example", require("./apis/example"));
-    app.use("/movies", require("./apis/seeMovies"));
+    app.use("/movies", require("./apis/movies"));
 
-    /**
-     * @swagger
-     * /:
-     *  get:
-     *      description: Home page.
-     */
     app.get("/", (req, res) => {
         res.send("SEP6 BACKEND WORKS!");
     });
@@ -23,6 +19,8 @@ function initializeRoutes(app){
 function initializeMiddleware(app){
     app.use(express.json());
     app.use(require('./middleware/exampleMiddleware'));
+    // app.use(require('./middleware/redisMiddleware').redisGet);
+
 }
 
 // async function initializeThirdPartyAPIS(){

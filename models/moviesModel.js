@@ -1,25 +1,38 @@
 const mysql = require('./connections/MySQLConnection');
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
-module.exports.getAllMoviesWithSorting = async (sorting, number, offset, category, decending) => {
+module.exports.getAllMoviesWithSorting = async (sorting, number, offset, category, decending, search) => {
+    let parameters = []
+    let order = decending == "1"? "DESC": "ASC";
+    let searchSQL;
+    let categorySQL;
+    if(category == "any"){
+        categorySQL = ""
+    }else{
+        categorySQL = "INNER JOIN movieToGenre " +
+        "ON movies.id = movieToGenre.movieId " +
+        "AND movieToGenre.genreId in ( SELECT genre.genreId FROM genre WHERE genre.genreName = ? ) ";
+        parameters.push(category)
+    }
 
-    const order = decending == "1"? "DESC": "ASC";
+    if(search == null){
+        searchSQL = ""
+    }else{
+        searchSQL = "WHERE title like ? "
+        parameters.push(search + "%")
+    }
     
+    parameters.push(sorting)
+    parameters.push(offset)
+    parameters.push(number)
 
-    // const getGroupIdSubquery = " SELECT genre.genreId FROM genre " +
-    // "WHERE genre.genreName = ? ";
-    
-    //Change to inner join later
     const data = await mysql.query(
-        "SELECT movies.id, movies.title, movies.posterURL as poster FROM movies " +
-        // "INNER JOIN movieToGenre " +
-        // "ON movies.id = movieToGenre.movieId " +
-        // "AND movieToGenre.genreId in ("+ getGroupIdSubquery +") " +
+        "SELECT movies.id, movies.title, movies.posterURL as poster, substring(description,1,100) as description FROM movies " +
+        categorySQL +
+        searchSQL +
         "ORDER BY ? "+ order +" " +
         "LIMIT ?,? ",
-        // [category, sorting, parseInt(offset), parseInt(number)]
-        [sorting, parseInt(offset), parseInt(number)]
-
+        parameters
     );
 
     return data;
@@ -124,13 +137,14 @@ module.exports.getGenresByMovieId = async (movieId) => {
     );
 }
 
-module.exports.getMoviesByPartialString = async (movieName, number, sorting) => {
-    return await mysql.query(
-        "SELECT id, title, year, posterURL as poster " +
-        "FROM movies where title like ? " +
-        "ORDER BY ? DESC " +
-        "LIMIT ? ",
-        [movieName + "%", sorting, parseInt(number)]
-    );
+// module.exports.getMoviesByPartialString = async (movieName, number, sorting) => {
+//     return await mysql.query(
+//         "SELECT id, title, year, posterURL as poster " +
+//         "FROM movies " +
+//         "WHERE title like ? " +
+//         "ORDER BY ? DESC " +
+//         "LIMIT ? ",
+//         [movieName + "%", sorting, parseInt(number)]
+//     );
     
-}
+// }
