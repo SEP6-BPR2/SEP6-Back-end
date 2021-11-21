@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {redisSet} = require("../middleware/redisMiddleware")
+// const {redisSet} = require("../middleware/redisMiddleware")
 const moviesService = require('../services/moviesService');
 
 /**
