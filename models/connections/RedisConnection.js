@@ -6,8 +6,9 @@ if(process.env.redis == "local"){
     console.log("Redis connected...")
 }else if(process.env.redis == "normal"){
     client = redis.createClient({
-        host: 'redis-server',
-        port: 6378
+        host: process.env.redis_network,
+        port: process.env.redis_port,
+        auth_pass: process.env.redis_password
     });
     console.log("Redis connected...")
 }else{
