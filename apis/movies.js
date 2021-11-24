@@ -1,7 +1,11 @@
 const express = require('express');
 const router = express.Router();
-// const {redisSet} = require("../middleware/redisMiddleware")
+const {redisSet} = require("../middleware/redisMiddleware")
 const moviesService = require('../services/moviesService');
+
+router.get("/test", async (req, res) => {
+    res.send("Movies endpoint")
+});
 
 /**
  * Get list of movies
@@ -11,7 +15,7 @@ const moviesService = require('../services/moviesService');
  * @param category - string, how many movies to return
  * @param decending - 1 or 0, 1 - sort and show decending, 0 - sort and show ascending 
  * 
- * @example - /list/title/10/0/Drama/1
+ * @example - movies/list/title/10/0/Drama/1
  */
 router.get("/list/:sorting/:number/:offset/:category/:decending", async (req, res) => {
     const data = await moviesService.getListOfMovies(
@@ -31,7 +35,7 @@ router.get("/list/:sorting/:number/:offset/:category/:decending", async (req, re
  * Get more info about specific movie
  * @param movieId - string, id of the movie 
  * 
- * @example - /details/54724
+ * @example - movies/details/54724
  */
 router.get("/details/:movieId", async (req, res) => {
     const data = await moviesService.getMovieDetails(
@@ -54,7 +58,7 @@ router.get("/details/:movieId", async (req, res) => {
  * @param decending - 1 or 0, 1 - sort and show decending, 0 - sort and show ascending 
  * @param movieName - string, partial or full string of movie
  * 
- * @example - /search/title/10/0/Drama/1/Sata
+ * @example - movies/search/title/10/0/Drama/1/Sata
  */
 router.get("/search/:sorting/:number/:offset/:category/:decending/:movieName", async (req, res) => {
     const data = await moviesService.getBySearch(

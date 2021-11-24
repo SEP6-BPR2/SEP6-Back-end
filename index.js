@@ -20,7 +20,28 @@ function initializeMiddleware(app){
 
 //Start server
 const app = express();
+const redis = require('redis');
 
+
+
+data()
+
+async function data(){
+    const client = redis.createClient({
+        host: process.env.redis_network,
+        port: process.env.redis_port,
+        auth_pass: process.env.redis_password
+    });
+    
+    await client.setex("keysdasd", 3600, 22115155);
+    console.log("Set key")
+    await client.get("keysdasd", (error, data) =>{
+        if(error) throw err
+        con
+        console.log("got key ")
+        console.log(data);
+    });
+}
 
 initializeMiddleware(app);
 initializeRoutes(app);
