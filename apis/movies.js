@@ -21,10 +21,9 @@ router.get("/list/:sorting/:number/:offset/:category/:decending", async (req, re
         req.params.category, 
         req.params.decending
     );
-    // if(data.length != 0){
-    //     console.log(req.originalUrl)
-    //     redisSet(req.originalUrl, JSON.stringify(data));
-    // }
+    if(data.length != 0){
+        redisSet(req.originalUrl, JSON.stringify(data));
+    }
     res.send(data)
 });
 
@@ -35,7 +34,15 @@ router.get("/list/:sorting/:number/:offset/:category/:decending", async (req, re
  * @example - /details/54724
  */
 router.get("/details/:movieId", async (req, res) => {
-    res.send(await moviesService.getMovieDetails(req.params.movieId));
+    const data = await moviesService.getMovieDetails(
+        req.params.movieId
+    );
+
+    if(data){
+        redisSet(req.originalUrl, JSON.stringify(data));
+    }
+
+    res.send(data);
 });
 
 /**
@@ -50,14 +57,20 @@ router.get("/details/:movieId", async (req, res) => {
  * @example - /search/title/10/0/Drama/1/Sata
  */
 router.get("/search/:sorting/:number/:offset/:category/:decending/:movieName", async (req, res) => {
-    res.send(await moviesService.getBySearch(
+    const data = await moviesService.getBySearch(
         req.params.sorting, 
         req.params.number, 
         req.params.offset, 
         req.params.category, 
         req.params.decending, 
         req.params.movieName
-    ));
+    );
+
+    if(data.length != 0){
+        redisSet(req.originalUrl, JSON.stringify(data))
+    }
+
+    res.send(data)
 });
 
 module.exports = router;

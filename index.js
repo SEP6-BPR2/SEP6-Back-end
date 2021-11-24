@@ -1,10 +1,4 @@
 const express = require('express');
-// const swaggerJsDoc = require('swagger-jsdoc');
-// const swaggerUi = require('swagger-ui-express');
-        // "swagger-jsdoc": "^6.1.0",
-        // "swagger-ui-express": "^4.1.6"
-
-// const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 require('dotenv').config(); // Initialize env
 
 function initializeRoutes(app){
@@ -19,34 +13,8 @@ function initializeRoutes(app){
 function initializeMiddleware(app){
     app.use(express.json());
     app.use(require('./middleware/exampleMiddleware'));
-    // app.use(require('./middleware/redisMiddleware').redisGet);
-
+    app.use(require('./middleware/redisMiddleware').redisGet);
 }
-
-// async function initializeThirdPartyAPIS(){
-//     //Get current state of third party website and use it to set some environment variables.
-//     const response = await fetch("https://api.themoviedb.org/3/configuration?api_key=" + process.env.THEMOVIEDBKEY);
-//     const body = await response.text();
-//     const object = JSON.parse(body);
-//     process.env.base_url = object.images.base_url
-//     // console.log(body);
-//     console.log("Third party environment initialized...")
-// }
-
-// function initializeSwagger(app){
-//     const swaggerOptions = {
-//         swaggerDefinition:{
-//             info: "Sep6 API",
-//             description: "API information",
-//             servers: ['http://localhost:8888/']
-//         },
-//         apis: ['index.js', './apis/*.js']
-//     };
-    
-//     const swaggerDocs = swaggerJsDoc(swaggerOptions);
-//     app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-    
-// }
 
 //Start server
 const app = express();
