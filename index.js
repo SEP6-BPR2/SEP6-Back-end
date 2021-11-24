@@ -13,7 +13,9 @@ function initializeRoutes(app){
 function initializeMiddleware(app){
     app.use(express.json());
     app.use(require('./middleware/exampleMiddleware'));
-    app.use(require('./middleware/redisMiddleware').redisGet);
+    if(process.env.redis){
+        app.use(require('./middleware/redisMiddleware').redisGet);
+    }
 }
 
 //Start server

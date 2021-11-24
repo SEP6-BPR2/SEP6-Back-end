@@ -13,6 +13,8 @@ module.exports.redisGet = async (req, res, next) => {
 }
 
 module.exports.redisSet = async (key, value) => {
-    redisClient.client.setex(key, 3600, value);
+    if(process.env.redis){
+        redisClient.client.setex(key, 3600, value);
+    }
 }
 
