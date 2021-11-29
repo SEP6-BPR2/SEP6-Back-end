@@ -5,7 +5,6 @@ const cors = require('cors')
 function initializeRoutes(app){
     app.use("/example", require("./apis/example"));
     app.use("/movies", require("./apis/movies"));
-    app.
     app.get("/", (req, res) => {
         res.send("SEP6 BACKEND WORKS!");
     });
