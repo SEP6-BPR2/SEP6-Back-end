@@ -1,16 +1,18 @@
 const express = require('express');
 require('dotenv').config(); // Initialize env
+const cors = require('cors')
 
 function initializeRoutes(app){
     app.use("/example", require("./apis/example"));
     app.use("/movies", require("./apis/movies"));
-
+    app.
     app.get("/", (req, res) => {
         res.send("SEP6 BACKEND WORKS!");
     });
 }
 
 function initializeMiddleware(app){
+    app.use(cors())
     app.use(express.json());
     app.use(require('./middleware/exampleMiddleware'));
     if(process.env.redis){
