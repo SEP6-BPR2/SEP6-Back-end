@@ -19,7 +19,7 @@ module.exports.getAllMoviesWithSorting = async (sorting, number, offset, categor
         searchSQL = ""
     }else{
         searchSQL = "WHERE title like ? "
-        parameters.push(search + "%")
+        parameters.push("%" + search + "%")
     }
     
     parameters.push(sorting)

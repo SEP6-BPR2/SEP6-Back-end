@@ -10,6 +10,7 @@ module.exports.getListOfMovies = async (sorting, number, offset, category, decen
     
     return data;
 }
+
 async function getMovies(sorting, number, offset, category, decending, search) {
     let movies = await moviesModel.getAllMoviesWithSorting(sorting, parseInt(number), parseInt(offset), category, decending, search)
 

@@ -40,25 +40,16 @@ CREATE TABLE genre (
 
 CREATE TABLE movieToGenre (
 	movieId 		INTEGER NOT NULL,
-	genreId 		INTEGER NOT NULL,
+	genreId 		INTEGER NOT NULL
 );
--- search for movie 
 
-SELECT movies.id, movies.title, movies.year, movies.description, movies.runtime, movies.posterURL, imdbRating.imdbRating, imdbRating.imdbVotes, imdbRating.ratingsDate, CONCAT(person.firstName, ' ', person.lastName) as director
-FROM movies 
-LEFT JOIN imdbRating ON movies.id = imdbRating.movieId
-LEFT JOIN movieToPerson ON movies.id = movieToPerson.movieId
-LEFT JOIN person ON movieToPerson.personId = person.personId
+CREATE TABLE favoritesList (
+	favoritesId 	INTEGER AUTO_INCREMENT NOT NULL,
+	userId 			TEXT NOT NULL,
+    PRIMARY KEY(favoritesId)
+);
 
-
-LIMIT 100;
-
-
-SELECT movies.id, movies.title, movies.year, movies.description, movies.runtime, movies.posterURL, imdbRating.imdbRating, imdbRating.imdbVotes, imdbRating.ratingsDate, CONCAT(person.firstName, ' ', person.lastName) as director
-FROM movies 
-LEFT JOIN imdbRating ON movies.id = imdbRating.movieId
-LEFT JOIN movieToPerson ON movies.id = movieToPerson.movieId
-LEFT JOIN person ON movieToPerson.personId = person.personId
-LEFT JOIN 
-
-LIMIT 100;
+CREATE TABLE favoritesListToMovie (
+	favoritesId 	INTEGER NOT NULL,
+	movieId 		INTEGER NOT NULL
+);
