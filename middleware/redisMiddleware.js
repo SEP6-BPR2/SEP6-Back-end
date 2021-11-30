@@ -2,9 +2,9 @@ const redisClient = require("../models/connections/RedisConnection");
 
 module.exports.redisGet = async (req, res, next) => {
     let url = req.originalUrl
-    if(req.originalUrl.split('/')[2] == "search"){
-        url = url + "/" + req.body.movieName
-    }
+    // if(req.originalUrl.split('/')[2] == "search"){
+    //     url = url + "/" + req.body.movieName
+    // }
     
     redisClient.client.get(url, (error, data) =>{
         if(error) throw err

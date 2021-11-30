@@ -60,19 +60,22 @@ router.get("/details/:movieId", async (req, res) => {
  * 
  * @example - movies/search/title/10/0/Drama/1/Sata
  */
-router.get("/search/:sorting/:number/:offset/:category/:decending", async (req, res) => {
+router.get("/search/:sorting/:number/:offset/:category/:decending/:movieName", async (req, res) => {
     const data = await moviesService.getBySearch(
         req.params.sorting, 
         req.params.number, 
         req.params.offset, 
         req.params.category, 
         req.params.decending, 
-        req.body.movieName
+        req.params.movieName
     );
 
     if(data.length != 0){
-        redisSet(req.originalUrl + "/" + req.body.movieName, JSON.stringify(data))
+        redisSet(req.originalUrl, JSON.stringify(data))
     }
+    // if(data.length != 0){
+    //     redisSet(req.originalUrl + "/" + req.body.movieName, JSON.stringify(data))
+    // }
 
     res.send(data)
 });
