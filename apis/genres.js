@@ -3,6 +3,11 @@ const router = express.Router();
 const genresService = require('../services/genresService');
 const {redisSet} = require("../middleware/redisMiddleware")
 
+/**
+ * Get list of all genres in the database
+ *
+ * @example - genres/all
+ */
 router.get("/all", async (req, res) => {
     const data = await genresService.getAllGenres(
     );
