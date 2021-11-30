@@ -9,7 +9,7 @@ function initializeRoutes(app){
     app.use("/favorites", require("./apis/favorites"));
     app.use("/users", require("./apis/users"));
     app.get("/", (req, res) => {
-        res.send("SEP6 BACKEND WORKS!");
+        res.send("SEP6 BACKEND: V1");
     });
 }
 

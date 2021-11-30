@@ -3,10 +3,10 @@ const moviesModel = require('../models/moviesModel');
 
 module.exports.getListOfMovies = async (sorting, number, offset, category, decending, search) => {
     let data = await getMovies(sorting, number, offset, category, decending, search)
-    if(data.length ==  0){
-        throw Error("Not implemented")
-        //Find by genre from third party instead
-    }
+    // if(data.length ==  0){
+    //     throw Error("Not implemented")
+    //     //Find by genre from third party instead
+    // }
     
     return data;
 }
@@ -128,7 +128,7 @@ module.exports.getMovieDetails = async (movieId) => {
     let movie = await moviesModel.getMovieByMovieId(movieId)
     movie = movie[0];
 
-    if(movie.posterURL == null){
+    if(!movie.hasOwnProperty("posterURL")){
         let otherData = await getMoreDataForMovieFromThirdParty(movie["id"])
         const newMovie = {
             ...movie,
@@ -170,10 +170,10 @@ module.exports.getMovieDetails = async (movieId) => {
 
 module.exports.getBySearch = async (sorting, number, offset, category, decending, search) => {
     let data = await getMovies(sorting, number, offset, category, decending, search)
-    if(data.length ==  0){
-        throw Error("Not implemented")
-        //Search in third party instead
-    }
+    // if(data.length ==  0){
+    //     throw Error("Not implemented")
+    //     //Search in third party instead
+    // }
     
     return data;
 }
