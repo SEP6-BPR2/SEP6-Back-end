@@ -1,10 +1,13 @@
 const express = require('express');
-require('dotenv').config(); // Initialize env
+require('dotenv').config();
 const cors = require('cors')
 
 function initializeRoutes(app){
     app.use("/example", require("./apis/example"));
     app.use("/movies", require("./apis/movies"));
+    app.use("/genres", require("./apis/genres"));
+    app.use("/favorites", require("./apis/favorites"));
+    app.use("/users", require("./apis/users"));
     app.get("/", (req, res) => {
         res.send("SEP6 BACKEND WORKS!");
     });
@@ -21,11 +24,9 @@ function initializeMiddleware(app){
 
 //Start server
 const app = express();
-const redis = require('redis');
 
 initializeMiddleware(app);
 initializeRoutes(app);
-// initializeSwagger(app);
 
 const PORT = process.env.PORT || 8888;
 app.listen(PORT, () => console.log(`Server started on http://localhost:${PORT}/`));
