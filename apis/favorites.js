@@ -14,7 +14,7 @@ router.get("/:userId", async (req, res) => {
         req.params.userId
     );
 
-    if(data.length != 0){
+    if(data != null){
         redisSet(req.originalUrl, JSON.stringify(data));
     }
 
@@ -49,7 +49,7 @@ router.delete("/:userId/:movieId", async (req, res) => {
     //Need token validation
     const status = await favoritesService.removeMovieFromFavoritesList(
         req.params.userId,
-        req.params.movieId
+        parseInt(req.params.movieId)
     );
     res.sendStatus(status)
 });
@@ -62,11 +62,11 @@ router.delete("/:userId/:movieId", async (req, res) => {
  * @example - GET {BaseURL}/favorites/inFavorites/123456/146870
  */
 router.get("/inFavorites/:userId/:movieId", async (req, res) => {
-    const status = await favoritesService.isMovieInUserFavorites(
+    const data = await favoritesService.isMovieInUserFavorites(
         req.params.userId,
         parseInt(req.params.movieId)
     );
-    res.send(status)
+    res.send(data)
 });
 
 module.exports = router;

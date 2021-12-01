@@ -6,7 +6,7 @@ module.exports.registerUser = async (userId, nickname) => {
 
     if(user.length == 1){
         await userModel.updateUser(userId, nickname)
-    }else{
+    }else if (user.length == 0){
         await userModel.insertUser(userId, nickname)
         await userModel.insertFavoriteList(userId)
     }

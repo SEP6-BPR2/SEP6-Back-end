@@ -3,7 +3,7 @@ const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch
 
 module.exports.getAllMoviesWithSorting = async (sorting, number, offset, category, decending, search) => {
     let parameters = []
-    let order = decending == "1"? "DESC": "ASC";
+    let order = decending == 1? "DESC": "ASC";
     let searchSQL;
     let categorySQL;
     if(category == "any"){

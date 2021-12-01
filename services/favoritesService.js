@@ -14,14 +14,24 @@ module.exports.getFavoritesList = async (userId) => {
 
 module.exports.addMovieToFavoritesList = async (userId, movieId) => {
     const list = await favoritesModel.getFavoritesList(userId)
-    await favoritesModel.addMovieToFavoritesList(list[0].favoritesId, movieId)
-    return 200;
+    const relation = await favoritesModel.getFavoritesListToMovie();
+    if(relation.length == 0 ){
+        await favoritesModel.addMovieToFavoritesList(list[0].favoritesId, movieId)
+        return 200;
+    }else{
+        return 403
+    }
 }
 
 module.exports.removeMovieFromFavoritesList = async (userId, movieId) => {
     const list = await favoritesModel.getFavoritesList(userId)
-    await favoritesModel.removeMovieFromFavoritesList(list[0].favoritesId, movieId)
-    return 200;
+    const relation = await favoritesModel.getFavoritesListToMovie();
+    if(relation.length == 0 ){
+        await favoritesModel.removeMovieFromFavoritesList(list[0].favoritesId, movieId)
+        return 200;
+    }else{
+        return 403
+    }
 }
 
 module.exports.isMovieInUserFavorites = async (userId, movieId) => {

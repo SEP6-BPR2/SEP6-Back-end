@@ -5,7 +5,7 @@ const usersService = require('../services/usersService');
 /**
  * Register user in the database
  * @param userId - string, id of the user, based on what firebase gives
- * @param movieId - string, name of the user NOT ACTUAL NAME OF USER
+ * @param nickname - string, name of the user NOT ACTUAL NAME OF USER
  *
  * @example - POST {BaseURL}/users/register/123456/rokasbarasa1
  */

@@ -23,14 +23,16 @@ router.get("/test", async (req, res) => {
 router.get("/list/:sorting/:number/:offset/:category/:decending", async (req, res) => {
     const data = await moviesService.getListOfMovies(
         req.params.sorting, 
-        req.params.number, 
-        req.params.offset, 
+        parseInt(req.params.number), 
+        parseInt(req.params.offset), 
         req.params.category, 
-        req.params.decending
+        parseInt(req.params.decending)
     );
+
     if(data.length != 0){
         redisSet(req.originalUrl, JSON.stringify(data));
     }
+    
     res.send(data)
 });
 

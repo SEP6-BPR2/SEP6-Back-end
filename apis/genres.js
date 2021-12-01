@@ -9,8 +9,7 @@ const {redisSet} = require("../middleware/redisMiddleware")
  * @example - GET {BaseURL}/genres/all
  */
 router.get("/all", async (req, res) => {
-    const data = await genresService.getAllGenres(
-    );
+    const data = await genresService.getAllGenres();
 
     if(data.length != 0){
         redisSet(req.originalUrl, JSON.stringify(data));
