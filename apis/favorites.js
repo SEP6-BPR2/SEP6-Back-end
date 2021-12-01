@@ -32,7 +32,7 @@ router.post("/:userId/:movieId", async (req, res) => {
     //Need token validation
     const status = await favoritesService.addMovieToFavoritesList(
         req.params.userId,
-        req.params.movieId
+        parseInt(req.params.movieId)
     );
 
     res.sendStatus(status)
@@ -52,6 +52,14 @@ router.delete("/:userId/:movieId", async (req, res) => {
         req.params.movieId
     );
     res.sendStatus(status)
+});
+
+router.get("/inFavorites/:userId/:movieId", async (req, res) => {
+    const status = await favoritesService.isMovieInUserFavorites(
+        req.params.userId,
+        parseInt(req.params.movieId)
+    );
+    res.send(status)
 });
 
 module.exports = router;

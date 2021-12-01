@@ -80,4 +80,24 @@ router.get("/search/:sorting/:number/:offset/:category/:decending/:movieName", a
     res.send(data)
 });
 
+/**
+ * Get list of available sorting parameters for movies
+ * 
+ * @example - movies/sorting
+ */
+router.get("/sorting", async (req, res) => {
+    const data = await moviesService.getSortingMethods();
+    
+    if(data.length != 0){
+        redisSet(req.originalUrl, JSON.stringify(data))
+    }
+
+    res.send(data)
+});
+
+router.get("/update", async (req, res) => {
+    moviesService.update();
+    res.sendStatus(200)
+});
+
 module.exports = router;

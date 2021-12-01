@@ -43,6 +43,11 @@ CREATE TABLE movieToGenre (
 	genreId 		INTEGER NOT NULL
 );
 
+CREATE TABLE appUser (
+	userId 			TEXT NOT NULL,
+	nickname 		TEXT NOT NULL,
+);
+
 CREATE TABLE favoritesList (
 	favoritesId 	INTEGER AUTO_INCREMENT NOT NULL,
 	userId 			TEXT NOT NULL,
