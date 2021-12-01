@@ -3,6 +3,9 @@ const router = express.Router();
 const {redisSet} = require("../middleware/redisMiddleware")
 const moviesService = require('../services/moviesService');
 
+/**
+ * Endpoint to test the connection to router of movie
+ */
 router.get("/test", async (req, res) => {
     res.send("Movies endpoint")
 });
@@ -15,7 +18,7 @@ router.get("/test", async (req, res) => {
  * @param category - string, how many movies to return
  * @param decending - 1 or 0, 1 - sort and show decending, 0 - sort and show ascending 
  * 
- * @example - movies/list/title/10/0/Drama/1
+ * @example - GET {BaseURL}/movies/list/title/10/0/Drama/1
  */
 router.get("/list/:sorting/:number/:offset/:category/:decending", async (req, res) => {
     const data = await moviesService.getListOfMovies(
@@ -35,7 +38,7 @@ router.get("/list/:sorting/:number/:offset/:category/:decending", async (req, re
  * Get more info about specific movie
  * @param movieId - string, id of the movie 
  * 
- * @example - movies/details/54724
+ * @example - GET {BaseURL}/movies/details/54724
  */
 router.get("/details/:movieId", async (req, res) => {
     const data = await moviesService.getMovieDetails(
@@ -58,7 +61,7 @@ router.get("/details/:movieId", async (req, res) => {
  * @param decending - 1 or 0, 1 - sort and show decending, 0 - sort and show ascending 
  * @param movieName - string, partial or full string of movie
  * 
- * @example - movies/search/title/10/0/Drama/1/Sata
+ * @example - GET {BaseURL}/movies/search/title/10/0/Drama/1/Sata
  */
 router.get("/search/:sorting/:number/:offset/:category/:decending/:movieName", async (req, res) => {
     const data = await moviesService.getBySearch(
@@ -81,9 +84,9 @@ router.get("/search/:sorting/:number/:offset/:category/:decending/:movieName", a
 });
 
 /**
- * Get list of available sorting parameters for movies
+ * Get list of available sorting parameters for movies endpoints
  * 
- * @example - movies/sorting
+ * @example - GET {BaseURL}/movies/sorting
  */
 router.get("/sorting", async (req, res) => {
     const data = await moviesService.getSortingMethods();
@@ -95,6 +98,11 @@ router.get("/sorting", async (req, res) => {
     res.send(data)
 });
 
+/**
+ * Find movies without a poster and try to update the posters from fallback third party api
+ * 
+ * @example - GET {BaseURL}/movies/update
+ */
 router.get("/update", async (req, res) => {
     moviesService.update();
     res.sendStatus(200)

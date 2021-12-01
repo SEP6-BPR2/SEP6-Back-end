@@ -7,7 +7,7 @@ const {redisSet} = require("../middleware/redisMiddleware")
  * Get list of favorite movies for user
  * @param userId - string, id of the user, based on what firebase gives
  * 
- * @example - users/123456
+ * @example - GET {BaseURL}/favorites/123456
  */
 router.get("/:userId", async (req, res) => {
     const data = await favoritesService.getFavoritesList(
@@ -26,7 +26,7 @@ router.get("/:userId", async (req, res) => {
  * @param userId - string, id of the user, based on what firebase gives
  * @param movieId - string, id of the movie
  *
- * @example - users/123456/146870
+ * @example - POST {BaseURL}/favorites/123456/146870
  */
 router.post("/:userId/:movieId", async (req, res) => {
     //Need token validation
@@ -43,7 +43,7 @@ router.post("/:userId/:movieId", async (req, res) => {
  * @param userId - string, id of the user, based on what firebase gives
  * @param movieId - string, id of the movie
  *
- * @example - users/123456/146870
+ * @example - DELETE {BaseURL}/favorites/123456/146870
  */
 router.delete("/:userId/:movieId", async (req, res) => {
     //Need token validation
@@ -54,6 +54,13 @@ router.delete("/:userId/:movieId", async (req, res) => {
     res.sendStatus(status)
 });
 
+/**
+ * Check if the movie is in the users favorite list. Returns boolean "exists".
+ * @param userId - string, id of the user, based on what firebase gives
+ * @param movieId - string, id of the movie
+ *
+ * @example - GET {BaseURL}/favorites/inFavorites/123456/146870
+ */
 router.get("/inFavorites/:userId/:movieId", async (req, res) => {
     const status = await favoritesService.isMovieInUserFavorites(
         req.params.userId,

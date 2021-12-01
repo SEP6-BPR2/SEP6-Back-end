@@ -1,8 +1,16 @@
 const userModel = require('../models/usersModel');
 
 module.exports.registerUser = async (userId, nickname) => {
-    await userModel.insertUser(userId, nickname)
-    await userModel.insertFavoriteList(userId)
+    //Check if user already exists 
+    const user = await userModel.getUser(userId)
+
+    if(user.length == 1){
+        await userModel.updateUser(userId, nickname)
+    }else{
+        await userModel.insertUser(userId, nickname)
+        await userModel.insertFavoriteList(userId)
+    }
+    
     const data = await userModel.getUser(userId)
     return data[0];
 }

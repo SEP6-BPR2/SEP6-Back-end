@@ -7,7 +7,7 @@ const usersService = require('../services/usersService');
  * @param userId - string, id of the user, based on what firebase gives
  * @param movieId - string, name of the user NOT ACTUAL NAME OF USER
  *
- * @example - users/register/123456/rokasbarasa1
+ * @example - POST {BaseURL}/users/register/123456/rokasbarasa1
  */
 router.post("/register/:userId/:nickname", async (req, res) => {
     const data = await usersService.registerUser(
@@ -21,7 +21,7 @@ router.post("/register/:userId/:nickname", async (req, res) => {
  * Get user from the database
  * @param userId - string, id of the user, based on what firebase gives
  *
- * @example - users/123456
+ * @example - GET {BaseURL}/users/123456
  */
 router.get("/:userId", async (req, res) => {
     const data = await usersService.getUser(
