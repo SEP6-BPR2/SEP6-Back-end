@@ -42,6 +42,10 @@ module.exports.getMovieByIDThirdParty = async (id) => {
     return await fetch(process.env.EXTERNAL_MOVIE_DB_BASE_URL+ "?i=" + id + "&apikey=" + process.env.EXTERNAL_MOVIE_DB_KEY );
 }
 
+module.exports.getMovieByIDFallbackThirdParty = async (id) => {
+    return await fetch("https://api.themoviedb.org/3/movie/"+ id +"?api_key=" + process.env.EXTERNAL_FALLBACK_MOVIE_DB_KEY);
+}
+
 module.exports.updateMovie = async (movie) => {
     await mysql.query(
         "UPDATE movies " +
@@ -58,6 +62,19 @@ module.exports.updateMovie = async (movie) => {
             movie.runtime, 
             movie.imdbRating, 
             movie.imdbVotes, 
+            movie.id
+        ]
+    );
+}
+
+module.exports.updateMoviePoster = async (movie) => {
+    await mysql.query(
+        "UPDATE movies " +
+        "SET movies.posterURL = ?, " +
+        "movies.lastUpdated = NOW() " +
+        "WHERE movies.id = ? ",
+        [
+            movie.posterURL, 
             movie.id
         ]
     );
@@ -137,14 +154,23 @@ module.exports.getGenresByMovieId = async (movieId) => {
     );
 }
 
-// module.exports.getMoviesByPartialString = async (movieName, number, sorting) => {
-//     return await mysql.query(
-//         "SELECT id, title, year, posterURL as poster " +
-//         "FROM movies " +
-//         "WHERE title like ? " +
-//         "ORDER BY ? DESC " +
-//         "LIMIT ? ",
-//         [movieName + "%", sorting, parseInt(number)]
-//     );
-    
-// }
+module.exports.getMoviesWithNoPoster = async () => {
+    return await mysql.query(
+        "SELECT * " +
+        "FROM movies " +
+        "WHERE posterURL = \"N/A\" ",
+        []
+    );
+}
+
+
+
+module.exports.getSortingMethods = async () => {
+    return await mysql.query(
+        "SELECT COLUMN_NAME as collumns " +
+        "FROM INFORMATION_SCHEMA.COLUMNS " +
+        "WHERE TABLE_SCHEMA = Database() " +
+        "AND TABLE_NAME = 'movies' ",
+        []
+    );
+}
