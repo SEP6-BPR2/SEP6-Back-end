@@ -42,7 +42,7 @@ module.exports.removeMovieFromFavoritesList = async (userId, movieId) => {
     const list = await favoritesModel.getFavoritesList(userId)
     if (list != null && list.length != 0 ){
         const relation = await favoritesModel.getFavoritesListToMovie(list[0].favoritesId, movieId);
-        if(relation.length == 0 ){
+        if(relation.length == 1 ){
             await favoritesModel.removeMovieFromFavoritesList(list[0].favoritesId, movieId)
             return 200;
         }else{

@@ -19,7 +19,7 @@ async (req, res) => {
         req.params.userId
     );
 
-    redisSet(req.originalUrl, data);
+    // redisSet(req.originalUrl, data);
 
     res.send(data)
 });

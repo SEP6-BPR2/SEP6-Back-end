@@ -84,10 +84,10 @@ router.get("/search/:sorting/:number/:offset/:category/:descending/:movieName",
 async (req, res) => {
     const data = await moviesService.getBySearch(
         req.params.sorting, 
-        req.params.number, 
-        req.params.offset, 
+        parseInt(req.params.number), 
+        parseInt(req.params.offset), 
         req.params.category, 
-        req.params.descending, 
+        parseInt(req.params.descending), 
         req.params.movieName
     );
 
