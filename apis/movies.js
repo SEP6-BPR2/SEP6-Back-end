@@ -46,8 +46,10 @@ async (req, res) => {
 /**
  * Get more info about specific movie
  * @param movieId - string, id of the movie 
+ * @param checkFavorites - bool int, 1 or 0 to check if favorite or not
+ * @param userId - string, id of user for which to check if favorite
  * 
- * @example - GET {BaseURL}/movies/details/54724
+ * @example - GET {BaseURL}/movies/details/54724/1/123456
  */
 router.get("/details/:movieId/:checkFavorites/:userId",
     param("movieId").notEmpty().isInt(), 
