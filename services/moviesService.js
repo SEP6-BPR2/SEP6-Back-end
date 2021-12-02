@@ -1,4 +1,5 @@
 const moviesModel = require('../models/moviesModel');
+const favoritesService = require('../services/favoritesService');
 
 
 module.exports.getListOfMovies = async (sorting, number, offset, category, descending, search) => {
@@ -170,48 +171,74 @@ async function updateDatabaseMovie(movie){
     console.log("Updated object")
 }
 
-module.exports.getMovieDetails = async (movieId) => {
-    let movie = await moviesModel.getMovieByMovieId(movieId)
-    movie = movie[0];
+module.exports.getMovieDetailsAndFavorites = async (movieId, checkFavorites, userId) => {
+    let data = await getMovieDetails(
+        movieId,
+    );
 
-    if(!movie.hasOwnProperty("posterURL")){
-        let otherData = await getMoreDataForMovieFromThirdParty(movie["id"])
-        const newMovie = {
-            ...movie,
-            ...otherData
-        }
-        
-        delete newMovie.posterURL
-        
-        updateDatabaseMovie(newMovie)
-        return newMovie
-    }else{
-
-        const people = await moviesModel.getPeopleByMovieId(movieId);
-    
-        const genres = await moviesModel.getGenresByMovieId(movieId);
-    
-        let directors = [];
-        let actors = []
-        let genresArray = []
-        genres.map((genre) => genresArray.push(genre.genreName));
-    
-        for(let i = 0; i < people.length ; i++){
-            if (people[i].roleName == "Director"){
-                directors.push(people[i].name)
-            }else{
-                actors.push(people[i].name)
-            }
-        }
-
+    if(!data.hasOwnProperty("error") && checkFavorites == 1){
+        const favorite = await favoritesService.isMovieInUserFavorites(
+            userId,
+            movieId
+        );
         return {
-            ...movie,
-            directors: directors,
-            actors: actors,
-            genres: genresArray
-        };
+            ...data,
+            favorites: favorite.exists
+        }
+    }else{
+        return data
     }
 }
+async function getMovieDetails(movieId){
+    let movie = await moviesModel.getMovieByMovieId(movieId)
+    if(movie.length > 0){
+        movie = movie[0];
+
+        if(!movie.hasOwnProperty("posterURL")){
+            let otherData = await getMoreDataForMovieFromThirdParty(movie["id"])
+            const newMovie = {
+                ...movie,
+                ...otherData
+            }
+            
+            delete newMovie.posterURL
+            
+            updateDatabaseMovie(newMovie)
+            return newMovie
+        }else{
+    
+            const people = await moviesModel.getPeopleByMovieId(movieId);
+        
+            const genres = await moviesModel.getGenresByMovieId(movieId);
+        
+            let directors = [];
+            let actors = []
+            let genresArray = []
+            genres.map((genre) => genresArray.push(genre.genreName));
+        
+            for(let i = 0; i < people.length ; i++){
+                if (people[i].roleName == "Director"){
+                    directors.push(people[i].name)
+                }else{
+                    actors.push(people[i].name)
+                }
+            }
+    
+            return {
+                ...movie,
+                directors: directors,
+                actors: actors,
+                genres: genresArray
+            };
+        }
+    }else{
+        return {
+            error: "Movie not found"
+        }
+    }
+}
+
+
 
 module.exports.getBySearch = async (sorting, number, offset, category, descending, search) => {
     let data = await getMovies(sorting, number, offset, category, descending, search)

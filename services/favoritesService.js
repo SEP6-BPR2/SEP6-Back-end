@@ -71,5 +71,4 @@ module.exports.isMovieInUserFavorites = async (userId, movieId) => {
             exists: false
         }
     }
-    
 }
