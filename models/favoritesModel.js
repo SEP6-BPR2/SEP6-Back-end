@@ -10,7 +10,8 @@ module.exports.getFavoritesList = async (userId) => {
 
 module.exports.getFavoritesListMovies = async (favoritesId) => {
     return await mysql.query(
-        "SELECT * FROM favoritesListToMovie " + 
+        "SELECT id, title, year, description, runtime, posterURL as poster, imdbRating, imdbVotes, lastUpdated " +
+        "FROM favoritesListToMovie " + 
         "INNER JOIN movies ON favoritesListToMovie.movieId = movies.id " +
         "WHERE favoritesListToMovie.favoritesId = ?",
         [favoritesId]

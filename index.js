@@ -17,11 +17,12 @@ function initializeRoutes(app){
 // Functions that are called before the actual endpoint is reached
 function initializeMiddleware(app){
     app.use(cors())
-    app.use(express.json());
+    app.use(express.json());    
     app.use(require('./middleware/exampleMiddleware'));
     if(process.env.redis){
         app.use(require('./middleware/redisMiddleware').redisGet);
     }
+
 }
 
 //Start server

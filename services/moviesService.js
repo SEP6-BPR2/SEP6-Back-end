@@ -1,13 +1,13 @@
 const moviesModel = require('../models/moviesModel');
 
 
-module.exports.getListOfMovies = async (sorting, number, offset, category, decending, search) => {
+module.exports.getListOfMovies = async (sorting, number, offset, category, descending, search) => {
     let data = await getMovies(
         sorting, 
         number, 
         offset, 
         category, 
-        decending, 
+        descending, 
         search
     )
 
@@ -19,14 +19,14 @@ module.exports.getListOfMovies = async (sorting, number, offset, category, decen
     return data;
 }
 
-async function getMovies(sorting, number, offset, category, decending, search) {
+async function getMovies(sorting, number, offset, category, descending, search) {
     
     let movies = await moviesModel.getAllMoviesWithSorting(
         sorting, 
         number, 
         offset, 
         category, 
-        decending, 
+        descending, 
         search
     )
 
@@ -213,8 +213,8 @@ module.exports.getMovieDetails = async (movieId) => {
     }
 }
 
-module.exports.getBySearch = async (sorting, number, offset, category, decending, search) => {
-    let data = await getMovies(sorting, number, offset, category, decending, search)
+module.exports.getBySearch = async (sorting, number, offset, category, descending, search) => {
+    let data = await getMovies(sorting, number, offset, category, descending, search)
     // if(data.length ==  0){
     //     throw Error("Not implemented")
     //     //Search in third party instead

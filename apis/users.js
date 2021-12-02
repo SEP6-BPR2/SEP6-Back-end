@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const usersService = require('../services/usersService');
+const { param } = require('express-validator');
+const { validate } = require("../middleware/validateMiddleware")
 
 /**
  * Register user in the database
@@ -9,7 +11,11 @@ const usersService = require('../services/usersService');
  *
  * @example - POST {BaseURL}/users/register/123456/rokasbarasa1
  */
-router.post("/register/:userId/:nickname", async (req, res) => {
+router.post("/register/:userId/:nickname", 
+    param("userId").notEmpty(), 
+    param("nickname").notEmpty(),
+    validate, 
+async (req, res) => {
     const data = await usersService.registerUser(
         req.params.userId, 
         req.params.nickname
@@ -23,7 +29,10 @@ router.post("/register/:userId/:nickname", async (req, res) => {
  *
  * @example - GET {BaseURL}/users/123456
  */
-router.get("/:userId", async (req, res) => {
+router.get("/:userId", 
+    param("userId").notEmpty(), 
+    validate, 
+async (req, res) => {
     const data = await usersService.getUser(
         req.params.userId
     );

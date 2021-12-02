@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const {redisSet} = require("../middleware/redisMiddleware")
+const { redisSet } = require("../middleware/redisMiddleware")
 const moviesService = require('../services/moviesService');
+const { param } = require('express-validator');
+const { validate } = require("../middleware/validateMiddleware")
 
 /**
  * Endpoint to test the connection to router of movie
@@ -16,22 +18,27 @@ router.get("/test", async (req, res) => {
  * @param number - int, how many movies to return
  * @param offset - int, how many movies to skip by
  * @param category - string, how many movies to return
- * @param decending - 1 or 0, 1 - sort and show decending, 0 - sort and show ascending 
+ * @param descending - 1 or 0, 1 - sort and show descending, 0 - sort and show ascending 
  * 
  * @example - GET {BaseURL}/movies/list/title/10/0/Drama/1
  */
-router.get("/list/:sorting/:number/:offset/:category/:decending", async (req, res) => {
+router.get("/list/:sorting/:number/:offset/:category/:descending", 
+    param("sorting").notEmpty().not().isInt(), 
+    param("number").notEmpty().isInt({min:1 ,max:1000}),
+    param("offset").notEmpty().isInt({min:0}),
+    param("category").notEmpty().isString(),
+    param("descending").notEmpty().isInt({min:0, max:1}),
+    validate,
+async (req, res) => {
     const data = await moviesService.getListOfMovies(
         req.params.sorting, 
         parseInt(req.params.number), 
         parseInt(req.params.offset), 
         req.params.category, 
-        parseInt(req.params.decending)
+        parseInt(req.params.descending)
     );
 
-    if(data.length != 0){
-        redisSet(req.originalUrl, JSON.stringify(data));
-    }
+    redisSet(req.originalUrl, data);
     
     res.send(data)
 });
@@ -42,14 +49,15 @@ router.get("/list/:sorting/:number/:offset/:category/:decending", async (req, re
  * 
  * @example - GET {BaseURL}/movies/details/54724
  */
-router.get("/details/:movieId", async (req, res) => {
+router.get("/details/:movieId",
+    param("movieId").notEmpty().isInt(), 
+    validate,
+async (req, res) => {
     const data = await moviesService.getMovieDetails(
         req.params.movieId
     );
 
-    if(data){
-        redisSet(req.originalUrl, JSON.stringify(data));
-    }
+    redisSet(req.originalUrl, data);
 
     res.send(data);
 });
@@ -60,27 +68,31 @@ router.get("/details/:movieId", async (req, res) => {
  * @param number - int, how many movies to return
  * @param offset - int, how many movies to skip by
  * @param category - string, how many movies to return
- * @param decending - 1 or 0, 1 - sort and show decending, 0 - sort and show ascending 
+ * @param descending - 1 or 0, 1 - sort and show descending, 0 - sort and show ascending 
  * @param movieName - string, partial or full string of movie
  * 
  * @example - GET {BaseURL}/movies/search/title/10/0/Drama/1/Sata
  */
-router.get("/search/:sorting/:number/:offset/:category/:decending/:movieName", async (req, res) => {
+router.get("/search/:sorting/:number/:offset/:category/:descending/:movieName", 
+    param("sorting").notEmpty().isString(), 
+    param("number").notEmpty().isInt({min:1 ,max:1000}),
+    param("offset").notEmpty().isInt({min:0}),
+    param("category").notEmpty().isString(),
+    param("descending").notEmpty().isInt({min:0, max:1}),
+    param("movieName").notEmpty(),
+    validate,
+async (req, res) => {
     const data = await moviesService.getBySearch(
         req.params.sorting, 
         req.params.number, 
         req.params.offset, 
         req.params.category, 
-        req.params.decending, 
+        req.params.descending, 
         req.params.movieName
     );
 
-    if(data.length != 0){
-        redisSet(req.originalUrl, JSON.stringify(data))
-    }
-    // if(data.length != 0){
-    //     redisSet(req.originalUrl + "/" + req.body.movieName, JSON.stringify(data))
-    // }
+    redisSet(req.originalUrl, data);
+    // redisSet(req.originalUrl + "/" + req.body.movieName, data);
 
     res.send(data)
 });
@@ -93,9 +105,7 @@ router.get("/search/:sorting/:number/:offset/:category/:decending/:movieName", a
 router.get("/sorting", async (req, res) => {
     const data = await moviesService.getSortingMethods();
     
-    if(data.length != 0){
-        redisSet(req.originalUrl, JSON.stringify(data))
-    }
+    redisSet(req.originalUrl, data);
 
     res.send(data)
 });
