@@ -7,6 +7,15 @@ module.exports.insertUser = async (id, nickname) => {
     );
 }
 
+module.exports.updateUser = async (id, nickname) => {
+    return await mysql.query(
+        "UPDATE appUser " +
+        "SET appUser.nickname = ? " +
+        "WHERE appUser.userId = ?  ",
+        [nickname, id]
+    );
+}
+
 module.exports.insertFavoriteList = async (userId) => {
     return await mysql.query(
         "INSERT INTO favoritesList (userId) VALUES (?) ",

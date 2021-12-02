@@ -1,9 +1,9 @@
 const mysql = require('./connections/MySQLConnection');
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
-module.exports.getAllMoviesWithSorting = async (sorting, number, offset, category, decending, search) => {
+module.exports.getAllMoviesWithSorting = async (sorting, number, offset, category, descending, search) => {
     let parameters = []
-    let order = decending == "1"? "DESC": "ASC";
+    let order = descending == 1? "DESC": "ASC";
     let searchSQL;
     let categorySQL;
     if(category == "any"){
