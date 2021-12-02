@@ -49,21 +49,23 @@ async (req, res) => {
  * 
  * @example - GET {BaseURL}/movies/details/54724
  */
-router.get("/details/:movieId",
+router.get("/details/:movieId/:checkFavorites/:userId",
     param("movieId").notEmpty().isInt(), 
+    param("checkFavorites").notEmpty().isInt({min:0, max:1}),
+    param("userId").optional(), 
     validate,
 async (req, res) => {
-    const data = await moviesService.getMovieDetails(
-        req.params.movieId
+    let data = await moviesService.getMovieDetailsAndFavorites(
+        parseInt(req.params.movieId),
+        parseInt(req.params.checkFavorites),
+        req.params.userId
     );
-
-    redisSet(req.originalUrl, data);
 
     res.send(data);
 });
 
 /**
- * Search for movie by partial string or full string. Same like list but with serch functionality
+ * Search for movie by partial string or full string. Same like list but with search functionality
  * @param sorting - string, what parameter in movie object to sort by
  * @param number - int, how many movies to return
  * @param offset - int, how many movies to skip by
