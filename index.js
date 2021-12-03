@@ -9,6 +9,8 @@ function initializeRoutes(){
     app.use("/genres", require("./apis/genres"));
     app.use("/favorites", require("./apis/favorites"));
     app.use("/users", require("./apis/users"));
+    app.use("/comments", require("./apis/comments"));
+
     app.get("/", (req, res) => {
         res.send("SEP6 BACKEND: V1");
     });

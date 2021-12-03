@@ -58,3 +58,18 @@ CREATE TABLE favoritesListToMovie (
 	favoritesId 	INTEGER NOT NULL,
 	movieId 		INTEGER NOT NULL
 );
+
+CREATE TABLE favoritesListToMovie (
+	favoritesId 	INTEGER NOT NULL,
+	movieId 		INTEGER NOT NULL
+);
+
+CREATE TABLE movieComment (
+	commentId		INTEGER AUTO_INCREMENT NOT NULL,
+	movieId 		INTEGER NOT NULL,
+	userId 			TEXT NOT NULL,
+	commentText 	TEXT NOT NULL,
+	replyCommentId 	INTEGER,
+	commentTime		DATETIME NOT NULL,
+    PRIMARY KEY(commentId)
+);
