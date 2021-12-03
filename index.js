@@ -3,7 +3,7 @@ require('dotenv').config();
 const cors = require('cors')
 
 // Routes that contain the endpoints
-function initializeRoutes(app){
+function initializeRoutes(){
     app.use("/example", require("./apis/example"));
     app.use("/movies", require("./apis/movies"));
     app.use("/genres", require("./apis/genres"));
@@ -15,7 +15,7 @@ function initializeRoutes(app){
 }
 
 // Functions that are called before the actual endpoint is reached
-function initializeMiddleware(app){
+function initializeMiddleware(){
     app.use(cors())
     app.use(express.json());    
     app.use(require('./middleware/exampleMiddleware'));
@@ -25,11 +25,16 @@ function initializeMiddleware(app){
 
 }
 
+function initializeFirebaseAdmin(){
+    require("./models/connections/FirebaseAdminConnection")
+}
+
 //Start server
 const app = express();
 
-initializeMiddleware(app);
-initializeRoutes(app);
+initializeFirebaseAdmin();
+initializeMiddleware();
+initializeRoutes();
 
 const PORT = process.env.PORT || 8888;
 app.listen(PORT, () => console.log(`Server started on http://localhost:${PORT}/`));
