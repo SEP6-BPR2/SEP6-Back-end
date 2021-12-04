@@ -22,7 +22,7 @@ module.exports.getAllMoviesWithSorting = async (sorting, number, offset, categor
         parameters.push("%" + search + "%")
     }
     
-    parameters.push(sorting)
+    // parameters.push(sorting)
     parameters.push(offset)
     parameters.push(number)
 
@@ -30,7 +30,7 @@ module.exports.getAllMoviesWithSorting = async (sorting, number, offset, categor
         "SELECT movies.id, movies.title, movies.posterURL as poster, substring(description,1,100) as description FROM movies " +
         categorySQL +
         searchSQL +
-        "ORDER BY ? "+ order +" " +
+        `ORDER BY ${sorting} ${order} ` +
         "LIMIT ?,? ",
         parameters
     );
