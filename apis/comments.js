@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const commentService = require("../services/commentService")
-const { param } = require('express-validator');
+const { param, body } = require('express-validator');
 const { validate } = require("../middleware/validateMiddleware")
 const validateJWT = require('../middleware/JwtValidation')
+
 /**
  * Get comments that are in movie description
  * @param movieId - integer, id for which to get comments for.
@@ -11,35 +12,42 @@ const validateJWT = require('../middleware/JwtValidation')
  * @example - GET {BaseURL}/comments/123456
  */
 router.get("/:movieId", 
-    param("movieId").notEmpty(), 
+    param("movieId").notEmpty().isInt(), 
     validate, 
 async (req, res) => {
     const data = await commentService.getComments(
-        req.params.movieId
+        parseInt(req.params.movieId)
     );
 
     res.send(data)
 });
 
 /**
- * Get user from the database
+ * Post comment for user
  * @param userId - integer, id for which to post comments for.
  *
  * @example - POST {BaseURL}/comments/44484/123456
+ * @body -
+ * {
+ *     "replyCommentId": null,
+ *     "text": "TEXT FOR COMMENT HERE"y
+ * }
  */
 router.post("/:userId/:movieId", 
     param("userId").notEmpty(),
-    param("movieId").notEmpty(), 
+    param("movieId").notEmpty().isInt(), 
+    body("replyCommentId").notEmpty().isInt(),
+    body("text").notEmpty(),
     validate, 
     validateJWT,
 async (req, res) => {
-    const data = await usersService.postComment(
+    await commentService.postComment(
         req.params.userId,
-        req.params.movieId,
+        parseInt(req.params.movieId),
         req.body
     );
 
-    res.send(data)
+    res.sendStatus(200)
 });
 
 module.exports = router;

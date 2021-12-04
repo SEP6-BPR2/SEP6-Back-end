@@ -22,7 +22,7 @@ if(process.env.GCPDBUSER !== "testing"){
  
 module.exports.connection = connection;
 
-
+// connection.escape().match
 //Uses prepared statements by replacing the ? in the queryString with values, in order.
 //queryString = 'SELECT * FROM `books` WHERE `author` = ?', 
 //values = ['David']
