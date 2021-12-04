@@ -1,11 +1,11 @@
 // require('dotenv').config()
 // process.env.GCPDBUSER = "testing" // Initialize testing env
-// const moviesModel = require('../models/moviesModel') 
-// const moviesService = require('../services/moviesService') 
+// const usersModel = require('../models/usersModel') 
+// const usersService = require('../services/usersService') 
 // const sinon = require('sinon')
 // const assert = require('assert')
 
-// describe("Movie service testing", () => {
+// describe("User service testing", () => {
 
 //     afterEach(function () {
 //         sinon.restore() 

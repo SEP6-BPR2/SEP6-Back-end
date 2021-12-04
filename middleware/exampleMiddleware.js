@@ -1,6 +1,6 @@
 function exampleMiddleware(req, res, next){
     console.log('Time:', Date.now())
-    next();
+    next() 
 }
 
-module.exports = exampleMiddleware;
+module.exports = exampleMiddleware 

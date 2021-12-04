@@ -1,8 +1,8 @@
-const express = require('express');
-const router = express.Router();
+const express = require('express') 
+const router = express.Router() 
 const { redisSet } = require("../middleware/redisMiddleware")
-const moviesService = require('../services/moviesService');
-const { param } = require('express-validator');
+const moviesService = require('../services/moviesService') 
+const { param } = require('express-validator') 
 const { validate } = require("../middleware/validateMiddleware")
 
 /**
@@ -10,7 +10,7 @@ const { validate } = require("../middleware/validateMiddleware")
  */
 router.get("/test", async (req, res) => {
     res.send("Movies endpoint")
-});
+}) 
 
 /**
  * Get list of movies
@@ -36,12 +36,12 @@ async (req, res) => {
         parseInt(req.params.offset), 
         req.params.category, 
         parseInt(req.params.descending)
-    );
+    ) 
 
-    redisSet(req.originalUrl, data);
+    redisSet(req.originalUrl, data) 
     
     res.send(data)
-});
+}) 
 
 /**
  * Get more info about specific movie
@@ -61,10 +61,10 @@ async (req, res) => {
         parseInt(req.params.movieId),
         parseInt(req.params.checkFavorites),
         req.params.userId
-    );
+    ) 
 
-    res.send(data);
-});
+    res.send(data) 
+}) 
 
 /**
  * Search for movie by partial string or full string. Same like list but with search functionality
@@ -93,13 +93,13 @@ async (req, res) => {
         req.params.category, 
         parseInt(req.params.descending), 
         req.params.movieName
-    );
+    ) 
 
-    redisSet(req.originalUrl, data);
-    // redisSet(req.originalUrl + "/" + req.body.movieName, data);
+    redisSet(req.originalUrl, data) 
+    // redisSet(req.originalUrl + "/" + req.body.movieName, data) 
 
     res.send(data)
-});
+}) 
 
 /**
  * Get list of available sorting parameters for movies endpoints
@@ -107,12 +107,12 @@ async (req, res) => {
  * @example - GET {BaseURL}/movies/sorting
  */
 router.get("/sorting", async (req, res) => {
-    const data = await moviesService.getSortingMethods();
+    const data = await moviesService.getSortingMethods() 
     
-    redisSet(req.originalUrl, data);
+    redisSet(req.originalUrl, data) 
 
     res.send(data)
-});
+}) 
 
 /**
  * Find movies without a poster and try to update the posters from fallback third party api
@@ -120,8 +120,8 @@ router.get("/sorting", async (req, res) => {
  * @example - GET {BaseURL}/movies/update
  */
 router.get("/update", async (req, res) => {
-    moviesService.update();
+    moviesService.update() 
     res.sendStatus(200)
-});
+}) 
 
-module.exports = router;
+module.exports = router 

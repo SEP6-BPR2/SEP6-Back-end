@@ -1,5 +1,6 @@
-const redis = require('redis');
-let client;
+const redis = require('redis') 
+
+let client 
 
 if(process.env.redis == "local"){
     client = redis.createClient()
@@ -9,10 +10,10 @@ if(process.env.redis == "local"){
         host: process.env.redis_network,
         port: process.env.redis_port,
         auth_pass: process.env.redis_password
-    });
+    }) 
     console.log("Redis Connected...")
 }else{
-    client = null;
+    client = null
 }
 
-module.exports.client = client;
+module.exports.client = client

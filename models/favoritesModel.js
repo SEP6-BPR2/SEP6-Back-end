@@ -1,11 +1,11 @@
-const mysql = require('./connections/MySQLConnection');
+const mysql = require('./connections/mySQLConnection') 
 
 module.exports.getFavoritesList = async (userId) => {
     return mysql.query(
         "SELECT * FROM favoritesList " + 
         "WHERE userId = ? ",
         [userId]
-    );
+    ) 
 }
 
 module.exports.getFavoritesListMovies = async (favoritesId) => {
@@ -15,14 +15,14 @@ module.exports.getFavoritesListMovies = async (favoritesId) => {
         "INNER JOIN movies ON favoritesListToMovie.movieId = movies.id " +
         "WHERE favoritesListToMovie.favoritesId = ?",
         [favoritesId]
-    );
+    ) 
 }
 
 module.exports.addMovieToFavoritesList = async (favoritesId, movieId) => {
     return mysql.query(
         "INSERT INTO favoritesListToMovie (favoritesId, movieId) VALUES (?, ?) ",
         [favoritesId, movieId]
-    );
+    ) 
 }
 
 module.exports.removeMovieFromFavoritesList = async (favoritesId, movieId) => {
@@ -30,7 +30,7 @@ module.exports.removeMovieFromFavoritesList = async (favoritesId, movieId) => {
         "DELETE FROM favoritesListToMovie " +
         "WHERE favoritesListToMovie.favoritesId = ? AND  favoritesListToMovie.movieId = ?",
         [favoritesId, movieId]
-    );
+    ) 
 }
 
 module.exports.getFavoritesListToMovie = async (favoritesId, movieId) => {
@@ -38,5 +38,5 @@ module.exports.getFavoritesListToMovie = async (favoritesId, movieId) => {
         "SELECT * FROM favoritesListToMovie " + 
         "WHERE favoritesListToMovie.favoritesId = ? AND  favoritesListToMovie.movieId = ?",
         [favoritesId, movieId]
-    );
+    ) 
 }

@@ -1,9 +1,9 @@
-const express = require('express');
-const router = express.Router();
-const usersService = require('../services/usersService');
-const { param } = require('express-validator');
+const express = require('express') 
+const router = express.Router() 
+const usersService = require('../services/usersService') 
+const { param } = require('express-validator') 
 const { validate } = require("../middleware/validateMiddleware")
-const validateJWT = require('../middleware/JwtValidation')
+const validateJWT = require('../middleware/jwtValidation')
 
 /**
  * Register user in the database
@@ -21,9 +21,9 @@ async (req, res) => {
     const data = await usersService.registerUser(
         req.params.userId, 
         req.params.nickname
-    );
+    ) 
     res.send(data)
-});
+}) 
 
 /**
  * Get user from the database
@@ -37,8 +37,8 @@ router.get("/:userId",
 async (req, res) => {
     const data = await usersService.getUser(
         req.params.userId
-    );
+    ) 
     res.send(data)
-});
+}) 
 
-module.exports = router;
+module.exports = router 
