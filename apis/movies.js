@@ -52,7 +52,7 @@ async (req, res) => {
  * @example - GET {BaseURL}/movies/details/54724/1/123456
  */
 router.get("/details/:movieId/:checkFavorites/:userId",
-    param("movieId").notEmpty().isInt(), 
+    param("movieId").notEmpty().isInt({min:1 ,max:9999999}), 
     param("checkFavorites").notEmpty().isInt({min:0, max:1}),
     param("userId").optional(), 
     validate,

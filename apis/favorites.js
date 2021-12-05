@@ -53,7 +53,7 @@ async (req, res) => {
  */
 router.delete("/:userId/:movieId", 
     param("userId").notEmpty(), 
-    param("movieId").notEmpty().isInt(),
+    param("movieId").notEmpty().isInt({min:1 ,max:9999999}),
     validate, 
     validateJWT,
 async (req, res) => {

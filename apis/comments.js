@@ -12,7 +12,7 @@ const validateJWT = require('../middleware/jwtValidationMiddleware')
  * @example - GET {BaseURL}/comments/123456
  */
 router.get("/:movieId", 
-    param("movieId").notEmpty().isInt(), 
+    param("movieId").notEmpty().isInt({min:1 ,max:9999999}), 
     validate, 
 async (req, res) => {
     const data = await commentService.getComments(
@@ -35,7 +35,7 @@ async (req, res) => {
  */
 router.post("/:userId/:movieId", 
     param("userId").notEmpty(),
-    param("movieId").notEmpty().isInt(), 
+    param("movieId").notEmpty().isInt({min:1 ,max:9999999}), 
     body("replyCommentId").optional().isInt(),
     body("text").notEmpty(),
     validate, 
