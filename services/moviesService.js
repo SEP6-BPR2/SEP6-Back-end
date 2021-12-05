@@ -1,6 +1,8 @@
 const moviesModel = require('../models/moviesModel') 
 const favoritesService = require('../services/favoritesService') 
 
+const sortingOptionsDTO = {sortingOptions: ['year', 'title', 'rating', 'votes', 'runtime']}
+
 module.exports.getListOfMovies = async (sorting, number, offset, category, descending, search) => {
     return module.exports.getMovies(
         sorting, 
@@ -253,6 +255,7 @@ module.exports.update = async () => {
     return 200 
 }
 
-module.exports.getSortingMethods = async () => {
-    return moviesModel.getSortingMethods()
+
+module.exports.getSortingMethods = () => {
+    return sortingOptionsDTO;
 }
