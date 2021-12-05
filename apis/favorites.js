@@ -1,10 +1,10 @@
-const express = require('express');
-const router = express.Router();
-const favoritesService = require('../services/favoritesService');
+const express = require('express') 
+const router = express.Router() 
+const favoritesService = require('../services/favoritesService') 
 const { redisSet } = require("../middleware/redisMiddleware")
-const { param } = require('express-validator');
+const { param } = require('express-validator') 
 const { validate } = require("../middleware/validateMiddleware")
-const validateJWT = require('../middleware/JwtValidation')
+const validateJWT = require('../middleware/jwtValidation')
 
 /**
  * Get list of favorite movies for user
@@ -18,10 +18,10 @@ router.get("/:userId",
 async (req, res) => {    
     const data = await favoritesService.getFavoritesList(
         req.params.userId
-    );
+    ) 
 
     res.send(data)
-});
+}) 
 
 /**
  * Add movie to users favorite list
@@ -39,10 +39,10 @@ async (req, res) => {
     const status = await favoritesService.addMovieToFavoritesList(
         req.params.userId,
         parseInt(req.params.movieId)
-    );
+    ) 
 
     res.sendStatus(status)
-});
+}) 
 
 /**
  * Remove movie from users favorite list
@@ -60,10 +60,10 @@ async (req, res) => {
     const status = await favoritesService.removeMovieFromFavoritesList(
         req.params.userId,
         parseInt(req.params.movieId)
-    );
+    ) 
 
     res.sendStatus(status)
-});
+}) 
 
 /**
  * Check if the movie is in the users favorite list. Returns boolean "exists".
@@ -80,8 +80,8 @@ async (req, res) => {
     const data = await favoritesService.isMovieInUserFavorites(
         req.params.userId,
         parseInt(req.params.movieId)
-    );
+    ) 
     res.send(data)
-});
+}) 
 
-module.exports = router;
+module.exports = router 

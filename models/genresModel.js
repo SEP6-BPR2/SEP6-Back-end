@@ -1,8 +1,8 @@
-const mysql = require('./connections/MySQLConnection');
+const mysql = require('./connections/mySQLConnection') 
 
 module.exports.getAllGenres = async () => {
-    return await mysql.query(
+    return mysql.query(
         "SELECT genreName FROM genre",
         []
-    );
+    ) 
 }

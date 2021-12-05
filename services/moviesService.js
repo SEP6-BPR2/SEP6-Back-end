@@ -1,11 +1,11 @@
-const moviesModel = require('../models/moviesModel');
-const favoritesService = require('../services/favoritesService');
+const moviesModel = require('../models/moviesModel') 
+const favoritesService = require('../services/favoritesService') 
 
 
 const sortingOptionsDTO = {sortingOptions: ['year', 'title', 'rating', 'votes', 'runtime']}
 
 module.exports.getListOfMovies = async (sorting, number, offset, category, descending, search) => {
-    let data = await getMovies(
+    return getMovies(
         sorting, 
         number, 
         offset, 
@@ -13,13 +13,6 @@ module.exports.getListOfMovies = async (sorting, number, offset, category, desce
         descending, 
         search
     )
-
-    // if(data.length ==  0){
-    //     throw Error("Not implemented")
-    //     //Find by genre from third party instead
-    // }
-    
-    return data;
 }
 
 async function getMovies(sorting, number, offset, category, descending, search) {
@@ -34,12 +27,12 @@ async function getMovies(sorting, number, offset, category, descending, search) 
     )
 
     //Some movies are not updated. Check that all parameters are updated before sending.
-    for(let i = 0; i< movies.length; i++){
+    for(let i = 0;  i< movies.length;  i++){
         if(movies[i].poster == null || movies[i].description == null){
 
             let otherData = await getMoreDataForMovieFromThirdParty(movies[i].id)
             
-            movies[i].description = otherData.description.substring(0, 99);
+            movies[i].description = otherData.description.substring(0, 99) 
 
             let updatedMovie = {
                 ...movies[i],
@@ -49,7 +42,7 @@ async function getMovies(sorting, number, offset, category, descending, search) 
             //If poster is 
             if(otherData.poster == "N/A"){
 
-                const poster = await getPosterFromFallbackThirdparty(movies[i].id)
+                const poster = await getPosterFromFallbackThirdParty(movies[i].id)
                 if(poster != null){
                     movies[i].poster = "https://image.tmdb.org/t/p/w500" + poster
                     updatedMovie.poster = movies[i].poster
@@ -68,7 +61,7 @@ async function getMovies(sorting, number, offset, category, descending, search) 
         }
     }
     
-    return movies;
+    return movies 
 }
 
 async function getMoreDataForMovieFromThirdParty(movieId){
@@ -77,7 +70,7 @@ async function getMoreDataForMovieFromThirdParty(movieId){
     const body = await response.text()
     const object = JSON.parse(body)
 
-    let data = {
+    return {
         description: object.Plot,
         poster: object.Poster,
         genres:[
@@ -93,10 +86,9 @@ async function getMoreDataForMovieFromThirdParty(movieId){
         imdbVotes: object.imdbVotes,
         runtime: object.Runtime
     }
-    return data;
 }
 
-async function getPosterFromFallbackThirdparty(movieId){
+async function getPosterFromFallbackThirdParty(movieId){
     const stringId = convertIdForAPI(movieId)
     const response = await moviesModel.getMovieByIDFallbackThirdParty(stringId)
     const body = await response.text()
@@ -106,17 +98,17 @@ async function getPosterFromFallbackThirdparty(movieId){
 }
 
 //The id has to be a certain length. If it is too short after adding tt 0's need to be added to fill space.
-const idLength = 9;
+const idLength = 9 
 function convertIdForAPI(id){
-    let idString = id.toString();
-    idString = "tt" + ("0".repeat(idLength - 2 - idString.length)) + idString;
+    let idString = id.toString() 
+    idString = "tt" + ("0".repeat(idLength - 2 - idString.length)) + idString 
     return idString
 }
 
 async function updateDatabaseMovie(movie){
 
     //Genre
-    for(let i = 0; i< movie.genres.length; i++){
+    for(let i = 0;  i< movie.genres.length;  i++){
         const genreInDb = await moviesModel.getGenreByName(movie.genres[i])
 
         if(genreInDb.length == 0){
@@ -129,10 +121,10 @@ async function updateDatabaseMovie(movie){
     }
 
     //Actors
-    for(let i = 0; i< movie.actors.length; i++){
-        const actor = movie.actors[i].split(' ');
+    for(let i = 0;  i< movie.actors.length;  i++){
+        const actor = movie.actors[i].split(' ') 
         if (actor.length == 1){
-            actor.push("");
+            actor.push("") 
         }
         const personInDb = await moviesModel.getPersonByName(actor[0], actor[1])
 
@@ -149,11 +141,11 @@ async function updateDatabaseMovie(movie){
     }
 
     //Directors
-    for(let i = 0; i< movie.directors.length; i++){
-        const director = movie.directors[i].split(' ');
+    for(let i = 0;  i< movie.directors.length;  i++){
+        const director = movie.directors[i].split(' ') 
 
         if (director.length == 1){
-            director.push("");
+            director.push("") 
         }
 
         const directorInDb = await moviesModel.getPersonByName(director[0], director[1])
@@ -176,13 +168,13 @@ async function updateDatabaseMovie(movie){
 module.exports.getMovieDetailsAndFavorites = async (movieId, checkFavorites, userId) => {
     let data = await getMovieDetails(
         movieId,
-    );
+    ) 
 
     if(!data.hasOwnProperty("error") && checkFavorites == 1){
         const favorite = await favoritesService.isMovieInUserFavorites(
             userId,
             movieId
-        );
+        ) 
         return {
             ...data,
             favorites: favorite.exists
@@ -194,7 +186,7 @@ module.exports.getMovieDetailsAndFavorites = async (movieId, checkFavorites, use
 async function getMovieDetails(movieId){
     let movie = await moviesModel.getMovieByMovieId(movieId)
     if(movie.length > 0){
-        movie = movie[0];
+        movie = movie[0] 
 
         if(!movie.hasOwnProperty("posterURL")){
             let otherData = await getMoreDataForMovieFromThirdParty(movie["id"])
@@ -209,16 +201,16 @@ async function getMovieDetails(movieId){
             return newMovie
         }else{
     
-            const people = await moviesModel.getPeopleByMovieId(movieId);
+            const people = await moviesModel.getPeopleByMovieId(movieId) 
         
-            const genres = await moviesModel.getGenresByMovieId(movieId);
+            const genres = await moviesModel.getGenresByMovieId(movieId) 
         
-            let directors = [];
+            let directors = [] 
             let actors = []
             let genresArray = []
-            genres.map((genre) => genresArray.push(genre.genreName));
+            genres.map((genre) => genresArray.push(genre.genreName)) 
         
-            for(let i = 0; i < people.length ; i++){
+            for(let i = 0;  i < people.length;   i++){
                 if (people[i].roleName == "Director"){
                     directors.push(people[i].name)
                 }else{
@@ -231,7 +223,7 @@ async function getMovieDetails(movieId){
                 directors: directors,
                 actors: actors,
                 genres: genresArray
-            };
+            } 
         }
     }else{
         return {
@@ -243,20 +235,15 @@ async function getMovieDetails(movieId){
 
 
 module.exports.getBySearch = async (sorting, number, offset, category, descending, search) => {
-    let data = await getMovies(sorting, number, offset, category, descending, search)
-    // if(data.length ==  0){
-    //     throw Error("Not implemented")
-    //     //Search in third party instead
-    // }
-    
-    return data;
+    return getMovies(sorting, number, offset, category, descending, search)
 }
 
 module.exports.update = async () => {
-    let movies = await moviesModel.getMoviesWithNoPoster();
-    let numberPosters = 0 
-    for(let i = 0; i<movies.length; i++){
-        let poster = await getPosterFromFallbackThirdparty(movies[i].id)
+    let movies = await moviesModel.getMoviesWithNoPoster()
+    let numberPosters = 0
+
+    for(let i = 0;  i < movies.length;  i++){
+        let poster = await getPosterFromFallbackThirdParty(movies[i].id)
         if(poster != null){
             numberPosters++
             console.log("https://image.tmdb.org/t/p/w500" + poster)
@@ -264,9 +251,11 @@ module.exports.update = async () => {
             moviesModel.updateMovie(movies[i])
         }
     }
+
     console.log("Movies with posters: " + numberPosters + "/" + movies.length)
-    return 200;
+    return 200 
 }
+
 module.exports.getSortingMethods = () => {
     return sortingOptionsDTO;
 }

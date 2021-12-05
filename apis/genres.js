@@ -1,6 +1,6 @@
-const express = require('express');
-const router = express.Router();
-const genresService = require('../services/genresService');
+const express = require('express') 
+const router = express.Router() 
+const genresService = require('../services/genresService') 
 const { redisSet } = require("../middleware/redisMiddleware")
 
 /**
@@ -9,11 +9,11 @@ const { redisSet } = require("../middleware/redisMiddleware")
  * @example - GET {BaseURL}/genres/all
  */
 router.get("/all", async (req, res) => {
-    const data = await genresService.getAllGenres();
+    const data = await genresService.getAllGenres() 
 
-    redisSet(req.originalUrl, data);
+    redisSet(req.originalUrl, data) 
 
     res.send(data)
-});
+}) 
 
-module.exports = router;
+module.exports = router 
