@@ -27,8 +27,7 @@ module.exports.getAllMoviesWithSorting = async (sorting, number, offset, categor
         parameters.push("%" + search + "%")
     }
 
-    // sorting = escapeSansQuotes(mysql, sorting)
-    // order = escapeSansQuotes(mysql,order)
+    sorting = escapeSansQuotes(mysql, sorting)
     parameters.push(offset)
     parameters.push(number)
 
@@ -42,10 +41,6 @@ module.exports.getAllMoviesWithSorting = async (sorting, number, offset, categor
         "LIMIT ?,? ",
         parameters
     )
-}
-
-function escapeSansQuotes(criterion) {
-    return mysql.connection().escape(criterion).match(/^'(\w+)'$/)[1] 
 }
 
 module.exports.getMovieByIDThirdParty = async (id) => {

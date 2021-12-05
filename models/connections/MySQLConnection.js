@@ -33,13 +33,12 @@ module.exports.connection = () => {
 //If they are string numbers they will have quotes on them.
 module.exports.query = async (queryString, values) => {
     return new Promise((resolve, reject) => {
-        let query = connection.query(queryString, values, function (error, elements) {
+        connection.query(queryString, values, function (error, elements) {
             if(error){
                 return reject(error) 
             }
             return resolve(elements);
         });
-        console.log(query.sql)
     });
 };
 
