@@ -1,21 +1,26 @@
-// require('dotenv').config()
-// process.env.GCPDBUSER = "testing" // Initialize testing env
-// const genresModel = require('../models/genresModel') 
-// const genresService = require('../services/genresService') 
-// const sinon = require('sinon')
-// const assert = require('assert')
+require('dotenv').config()
+process.env.GCPDBUSER = "testing" // Initialize testing env
+const genresModel = require('../models/genresModel') 
+const genresService = require('../services/genresService') 
+const sinon = require('sinon')
 
-// describe("Genre service testing", () => {
+describe("Genre service testing", () => {
 
-//     afterEach(function () {
-//         sinon.restore() 
-//     }) 
+    afterEach(function () {
+        sinon.restore() 
+    }) 
 
-//     it("getExampleData", async () => {
-//         sinon.stub(exampleModel, "getExampleData").returns("test worked") 
+    describe("getAllGenres", () => {
+        it("getAllGenres OK", async () => {
+            sinon.stub(genresModel, "getAllGenres").returns("Test works") 
+            
+            const data = await genresService.getAllGenres() 
+            
+            assertEquals(data, "Test works")
+        })
+    })
+})
 
-//         const data = await exampleService.getExample() 
-
-//         assert.equal(data, "test worked")
-//     }) 
-// })
+function assertEquals(value1, value2){
+    if(value1 != value2) throw error
+}

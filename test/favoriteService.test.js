@@ -4,7 +4,6 @@ const favoritesModel = require('../models/favoritesModel')
 const usersModel = require('../models/usersModel') 
 const favoritesService = require('../services/favoritesService') 
 const sinon = require('sinon')
-const assert = require('assert')
 
 describe("Favorite service testing", () => {
 
@@ -23,20 +22,9 @@ describe("Favorite service testing", () => {
             assertEquals(data.author, "nickname")
         }) 
 
-        it("getFavoritesList favorite list not found", async () => {
+        it("getFavoritesList no favorite list", async () => {
             sinon.stub(usersModel, "getUser").returns([{ nickname: "nickname"}])
             sinon.stub(favoritesModel, "getFavoritesList").returns([])
-    
-            const data = await favoritesService.getFavoritesList("UserId")
-    
-            assertEquals(data.author, null)
-            assertEquals(data.movies, null)
-        }) 
-
-        it("getFavoritesList favorite list not found null", async () => {
-            sinon.stub(usersModel, "getUser").returns([{ nickname: "nickname"}])
-            sinon.stub(favoritesModel, "getFavoritesList").returns(null)
-            sinon.stub(favoritesModel, "getFavoritesListMovies").returns([{movie: "name"}])
     
             const data = await favoritesService.getFavoritesList("UserId")
     
@@ -75,40 +63,65 @@ describe("Favorite service testing", () => {
     
             assertEquals(data, 403)
         })
+    })
 
-        it("addMovieToFavoritesList no favorite list null", async () => {
-            sinon.stub(favoritesModel, "getFavoritesList").returns(null)
-            sinon.stub(favoritesModel, "getFavoritesListToMovie").returns([{relation: true}])
-            sinon.stub(favoritesModel, "addMovieToFavoritesList").returns([{movie: "name"}])
+    describe("removeMovieFromFavoritesList", () => {
+        it("removeMovieFromFavoritesList OK", async () => {
+            sinon.stub(favoritesModel, "getFavoritesList").returns([{ favoritesId: 123}]) 
+            sinon.stub(favoritesModel, "getFavoritesListToMovie").returns([{exists: true}])
+            sinon.stub(favoritesModel, "removeMovieFromFavoritesList").returns("test worked") 
     
-            const data = await favoritesService.addMovieToFavoritesList("userId", 123) 
+            const data = await favoritesService.removeMovieFromFavoritesList() 
+    
+            assertEquals(data, 200)
+        })
+
+        it("removeMovieFromFavoritesList no relation", async () => {
+            sinon.stub(favoritesModel, "getFavoritesList").returns([{ favoritesId: 123}]) 
+            sinon.stub(favoritesModel, "getFavoritesListToMovie").returns([])
+
+            const data = await favoritesService.removeMovieFromFavoritesList() 
+    
+            assertEquals(data, 403)
+        })
+
+        it("removeMovieFromFavoritesList no favorites list", async () => {
+            sinon.stub(favoritesModel, "getFavoritesList").returns([]) 
+
+            const data = await favoritesService.removeMovieFromFavoritesList() 
     
             assertEquals(data, 403)
         })
     })
 
-    // describe("removeMovieFromFavoritesList", () => {
-    //     it("removeMovieFromFavoritesList", async () => {
-    //         sinon.stub(favoritesModel, "getFavoritesList").returns("test worked") 
-    //         sinon.stub(favoritesModel, "getFavoritesListToMovie").returns("test worked") 
-    //         sinon.stub(favoritesModel, "removeMovieFromFavoritesList").returns("test worked") 
-    
-    //         const data = await favoritesService.removeMovieFromFavoritesList() 
-    
-    //         assertEquals(data, "test worked")
-    //     })
-    // })
+    describe("isMovieInUserFavorites", () => {
+        it("isMovieInUserFavorites OK", async () => {
+            sinon.stub(favoritesModel, "getFavoritesList").returns([{ favoritesId: 123}]) 
+            sinon.stub(favoritesModel, "getFavoritesListToMovie").returns([{ relation: true}]) 
+            
+            const data = await favoritesService.isMovieInUserFavorites() 
+            
+            //Hard to compare boolean values. Turn dictionary to string and compare
+            assertEquals(JSON.stringify(data), JSON.stringify({exists: true}))
+        })
 
-    // describe("isMovieInUserFavorites", () => {
-    //     it("isMovieInUserFavorites", async () => {
-    //         sinon.stub(favoritesModel, "getFavoritesList").returns("test worked") 
-    //         sinon.stub(favoritesModel, "getFavoritesListToMovie").returns("test worked") 
+        it("isMovieInUserFavorites no relation", async () => {
+            sinon.stub(favoritesModel, "getFavoritesList").returns([{ favoritesId: 123}]) 
+            sinon.stub(favoritesModel, "getFavoritesListToMovie").returns([]) 
     
-    //         const data = await favoritesService.isMovieInUserFavorites() 
+            const data = await favoritesService.isMovieInUserFavorites() 
     
-    //         assertEquals(data, "test worked")
-    //     })
-    // })
+            assertEquals(JSON.stringify(data), JSON.stringify({exists: false}))
+        })
+
+        it("isMovieInUserFavorites no favorites list", async () => {
+            sinon.stub(favoritesModel, "getFavoritesList").returns([]) 
+    
+            const data = await favoritesService.isMovieInUserFavorites() 
+    
+            assertEquals(JSON.stringify(data), JSON.stringify({exists: false}))
+        })
+    })
 })
 
 function assertEquals(value1, value2){

@@ -1,9 +1,8 @@
 const moviesModel = require('../models/moviesModel') 
 const favoritesService = require('../services/favoritesService') 
 
-
 module.exports.getListOfMovies = async (sorting, number, offset, category, descending, search) => {
-    return getMovies(
+    return module.exports.getMovies(
         sorting, 
         number, 
         offset, 
@@ -13,8 +12,7 @@ module.exports.getListOfMovies = async (sorting, number, offset, category, desce
     )
 }
 
-async function getMovies(sorting, number, offset, category, descending, search) {
-    
+module.exports.getMovies = async (sorting, number, offset, category, descending, search) => {
     let movies = await moviesModel.getAllMoviesWithSorting(
         sorting, 
         number, 
@@ -28,7 +26,7 @@ async function getMovies(sorting, number, offset, category, descending, search) 
     for(let i = 0;  i< movies.length;  i++){
         if(movies[i].poster == null || movies[i].description == null){
 
-            let otherData = await getMoreDataForMovieFromThirdParty(movies[i].id)
+            let otherData = await module.exports.getMoreDataForMovieFromThirdParty(movies[i].id)
             
             movies[i].description = otherData.description.substring(0, 99) 
 
@@ -40,7 +38,7 @@ async function getMovies(sorting, number, offset, category, descending, search) 
             //If poster is 
             if(otherData.poster == "N/A"){
 
-                const poster = await getPosterFromFallbackThirdParty(movies[i].id)
+                const poster = await module.exports.getPosterFromFallbackThirdParty(movies[i].id)
                 if(poster != null){
                     movies[i].poster = "https://image.tmdb.org/t/p/w500" + poster
                     updatedMovie.poster = movies[i].poster
@@ -54,7 +52,7 @@ async function getMovies(sorting, number, offset, category, descending, search) 
 
             }
 
-            updateDatabaseMovie(updatedMovie)
+            module.exports.updateDatabaseMovie(updatedMovie)
 
         }
     }
@@ -62,8 +60,8 @@ async function getMovies(sorting, number, offset, category, descending, search) 
     return movies 
 }
 
-async function getMoreDataForMovieFromThirdParty(movieId){
-    const stringId = convertIdForAPI(movieId)
+module.exports.getMoreDataForMovieFromThirdParty = async (movieId) => {
+    const stringId = module.exports.convertIdForAPI(movieId)
     const response = await moviesModel.getMovieByIDThirdParty(stringId)
     const body = await response.text()
     const object = JSON.parse(body)
@@ -86,8 +84,8 @@ async function getMoreDataForMovieFromThirdParty(movieId){
     }
 }
 
-async function getPosterFromFallbackThirdParty(movieId){
-    const stringId = convertIdForAPI(movieId)
+module.exports.getPosterFromFallbackThirdParty = async (movieId) => {
+    const stringId = module.exports.convertIdForAPI(movieId)
     const response = await moviesModel.getMovieByIDFallbackThirdParty(stringId)
     const body = await response.text()
     const object = JSON.parse(body)
@@ -96,14 +94,18 @@ async function getPosterFromFallbackThirdParty(movieId){
 }
 
 //The id has to be a certain length. If it is too short after adding tt 0's need to be added to fill space.
-const idLength = 9 
-function convertIdForAPI(id){
+module.exports.convertIdForAPI = (id) => {
+    const idLength = 9 
     let idString = id.toString() 
-    idString = "tt" + ("0".repeat(idLength - 2 - idString.length)) + idString 
-    return idString
+    if(idString != "" && idString.length <= 7 && idString.length > 0){
+        idString = "tt" + ("0".repeat(idLength - 2 - idString.length)) + idString 
+        return idString
+    }else{
+        throw Error("Id passed to function has to have 7-1 characters.")
+    }
 }
 
-async function updateDatabaseMovie(movie){
+module.exports.updateDatabaseMovie = async (movie) => {
 
     //Genre
     for(let i = 0;  i< movie.genres.length;  i++){
@@ -164,9 +166,7 @@ async function updateDatabaseMovie(movie){
 }
 
 module.exports.getMovieDetailsAndFavorites = async (movieId, checkFavorites, userId) => {
-    let data = await getMovieDetails(
-        movieId,
-    ) 
+    const data = await module.exports.getMovieDetails(movieId) 
 
     if(!data.hasOwnProperty("error") && checkFavorites == 1){
         const favorite = await favoritesService.isMovieInUserFavorites(
@@ -181,21 +181,22 @@ module.exports.getMovieDetailsAndFavorites = async (movieId, checkFavorites, use
         return data
     }
 }
-async function getMovieDetails(movieId){
+
+module.exports.getMovieDetails = async (movieId) => {
     let movie = await moviesModel.getMovieByMovieId(movieId)
     if(movie.length > 0){
         movie = movie[0] 
 
         if(!movie.hasOwnProperty("posterURL")){
-            let otherData = await getMoreDataForMovieFromThirdParty(movie["id"])
-            const newMovie = {
+            const otherData = await module.exports.getMoreDataForMovieFromThirdParty(movie["id"])
+            let newMovie = {
                 ...movie,
                 ...otherData
             }
             
             delete newMovie.posterURL
             
-            updateDatabaseMovie(newMovie)
+            module.exports.updateDatabaseMovie(newMovie)
             return newMovie
         }else{
     
@@ -230,10 +231,8 @@ async function getMovieDetails(movieId){
     }
 }
 
-
-
 module.exports.getBySearch = async (sorting, number, offset, category, descending, search) => {
-    return getMovies(sorting, number, offset, category, descending, search)
+    return module.exports.getMovies(sorting, number, offset, category, descending, search)
 }
 
 module.exports.update = async () => {
@@ -241,7 +240,7 @@ module.exports.update = async () => {
     let numberPosters = 0
 
     for(let i = 0;  i < movies.length;  i++){
-        let poster = await getPosterFromFallbackThirdParty(movies[i].id)
+        let poster = await module.exports.getPosterFromFallbackThirdParty(movies[i].id)
         if(poster != null){
             numberPosters++
             console.log("https://image.tmdb.org/t/p/w500" + poster)
@@ -255,6 +254,5 @@ module.exports.update = async () => {
 }
 
 module.exports.getSortingMethods = async () => {
-    let data = await moviesModel.getSortingMethods()
-    return data 
+    return moviesModel.getSortingMethods()
 }
