@@ -287,11 +287,11 @@ describe("Movie service testing", () => {
 
     describe("getSortingMethods", () => {
         it("getSortingMethods OK", async () => {
-            sinon.stub(moviesModel, "getSortingMethods").returns("Test works") 
+            // sinon.stub(moviesModel, "getAttributesNames").returns("Test works") 
 
             const data = await moviesService.getSortingMethods() 
             
-            assertEquals(data, "Test works")
+            assertEquals(JSON.stringify(data), JSON.stringify({sortingOptions: ['year', 'title', 'rating', 'votes', 'runtime']}))
         })
     })
 

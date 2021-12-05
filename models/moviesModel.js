@@ -28,7 +28,6 @@ module.exports.getAllMoviesWithSorting = async (sorting, number, offset, categor
     }
 
     sorting = escapeSansQuotes(mysql, sorting)
-    order = escapeSansQuotes(mysql,order)
     parameters.push(offset)
     parameters.push(number)
 

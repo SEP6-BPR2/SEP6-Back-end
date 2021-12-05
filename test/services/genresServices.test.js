@@ -12,11 +12,20 @@ describe("Genre service testing", () => {
 
     describe("getAllGenres", () => {
         it("getAllGenres OK", async () => {
-            sinon.stub(genresModel, "getAllGenres").returns("Test works") 
+            sinon.stub(genresModel, "getAllGenres").returns([{genreName: "opera"}]) 
             
             const data = await genresService.getAllGenres() 
             
-            assertEquals(data, "Test works")
+            assertEquals(data.genres[0], "opera")
+            assertEquals(data.genres[1], "any")
+        })
+
+        it("getAllGenres OK N/A", async () => {
+            sinon.stub(genresModel, "getAllGenres").returns([{genreName: "N/A"}]) 
+            
+            const data = await genresService.getAllGenres() 
+            
+            assertEquals(data.genres[0], "any")
         })
     })
 })
