@@ -27,7 +27,7 @@ module.exports.getAllMoviesWithSorting = async (sorting, number, offset, categor
     parameters.push(number)
 
     return mysql.query(
-        "SELECT movies.id, movies.title, movies.posterURL as poster, substring(description,1,100) as description " +
+        "SELECT movies.id, movies.title, movies.posterURL, substring(description,1,100) as description " +
         "FROM movies " +
         categorySQL +
         searchSQL +
@@ -64,7 +64,7 @@ module.exports.updateMovie = async (movie) => {
         "movies.lastUpdated = NOW() " +
         "WHERE movies.id = ? ",
         [
-            movie.poster, 
+            movie.posterURL, 
             movie.description, 
             movie.runtime, 
             movie.imdbRating, 

@@ -24,7 +24,7 @@ module.exports.getMovies = async (sorting, number, offset, category, descending,
 
     //Some movies are not updated. Check that all parameters are updated before sending.
     for(let i = 0;  i< movies.length;  i++){
-        if(movies[i].poster == null || movies[i].description == null){
+        if(movies[i].posterURL == null || movies[i].description == null){
 
             let otherData = await module.exports.getMoreDataForMovieFromThirdParty(movies[i].id)
             
@@ -36,19 +36,19 @@ module.exports.getMovies = async (sorting, number, offset, category, descending,
             }
 
             //If poster is 
-            if(otherData.poster == "N/A"){
+            if(otherData.posterURL == "N/A"){
 
-                const poster = await module.exports.getPosterFromFallbackThirdParty(movies[i].id)
-                if(poster != null){
-                    movies[i].poster = "https://image.tmdb.org/t/p/w500" + poster
-                    updatedMovie.poster = movies[i].poster
+                const posterURL = await module.exports.getPosterFromFallbackThirdParty(movies[i].id)
+                if(posterURL != null){
+                    movies[i].posterURL = "https://image.tmdb.org/t/p/w500" + posterURL
+                    updatedMovie.posterURL = movies[i].posterURL
                 }else{
-                    movies[i].poster = "N/A"
+                    movies[i].posterURL = "N/A"
                 }
 
             }else{
                 
-                movies[i].poster = otherData.poster
+                movies[i].posterURL = otherData.posterURL
 
             }
 
@@ -68,7 +68,7 @@ module.exports.getMoreDataForMovieFromThirdParty = async (movieId) => {
 
     return {
         description: object.Plot,
-        poster: object.Poster,
+        posterURL: object.Poster,
         genres:[
             ...object.Genre.split(", ")
         ],
@@ -240,11 +240,11 @@ module.exports.update = async () => {
     let numberPosters = 0
 
     for(let i = 0;  i < movies.length;  i++){
-        let poster = await module.exports.getPosterFromFallbackThirdParty(movies[i].id)
-        if(poster != null){
+        let posterURL = await module.exports.getPosterFromFallbackThirdParty(movies[i].id)
+        if(posterURL != null){
             numberPosters++
-            console.log("https://image.tmdb.org/t/p/w500" + poster)
-            movies[i].posterURL = "https://image.tmdb.org/t/p/w500" + poster
+            console.log("https://image.tmdb.org/t/p/w500" + posterURL)
+            movies[i].posterURL = "https://image.tmdb.org/t/p/w500" + posterURL
             moviesModel.updateMovie(movies[i])
         }
     }

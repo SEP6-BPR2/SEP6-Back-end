@@ -1,9 +1,9 @@
 const express = require('express') 
 const router = express.Router() 
 const commentService = require("../services/commentService")
-const { param, body } = require('express-validator') 
+const { param, body } = require('express-validator')
 const { validate } = require("../middleware/validateMiddleware")
-const validateJWT = require('../middleware/jwtValidation')
+const validateJWT = require('../middleware/jwtValidationMiddleware')
 
 /**
  * Get comments that are in movie description

@@ -8,8 +8,8 @@ module.exports.redisGet = async (req, res, next) => {
     // }
 
     if(process.env.redis == "local" || process.env.redis == "normal"){
-        redisClient.client.get(url, (error, data) =>{
-            if(error) throw err
+        redisClient.client().get(url, (error, data) =>{
+            if(error) next() //If there is error just continue without redis
     
             if(data != null){
                 res.send(data)
@@ -25,7 +25,7 @@ module.exports.redisGet = async (req, res, next) => {
 module.exports.redisSet = async (key, value) => {
     if(process.env.redis == "local" || process.env.redis == "normal" ){
         if(value != null){
-            redisClient.client.setex(key, 3600, JSON.stringify(value)) 
+            redisClient.client().setex(key, 3600, JSON.stringify(value)) 
         }
     }
 }

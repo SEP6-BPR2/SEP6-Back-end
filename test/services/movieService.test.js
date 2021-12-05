@@ -1,8 +1,8 @@
 require('dotenv').config()
 process.env.GCPDBUSER = "testing" // Initialize testing env
-const moviesModel = require('../models/moviesModel') 
-const moviesService = require('../services/moviesService') 
-const favoritesService = require('../services/favoritesService') 
+const moviesModel = require('../../models/moviesModel') 
+const moviesService = require('../../services/moviesService') 
+const favoritesService = require('../../services/favoritesService') 
 const sinon = require('sinon')
 
 describe("Movie service testing", () => {
@@ -23,57 +23,57 @@ describe("Movie service testing", () => {
 
     describe("getMovies", () => {
         it("getMovies OK no missing details", async () => {
-            sinon.stub(moviesModel, "getAllMoviesWithSorting").returns([{poster: "poster", description: "description"}]) 
+            sinon.stub(moviesModel, "getAllMoviesWithSorting").returns([{posterURL: "poster", description: "description"}]) 
             
             const data = await moviesService.getMovies("sorting", 123, 1, "category", 1, "search") 
             
-            assertEquals(data[0].poster, "poster")
+            assertEquals(data[0].posterURL, "poster")
             assertEquals(data[0].description, "description")
         })
 
-        it("getMovies OK missing poster", async () => {
-            sinon.stub(moviesModel, "getAllMoviesWithSorting").returns([{poster: null, description: "description"}]) 
-            sinon.stub(moviesService, "getMoreDataForMovieFromThirdParty").returns({poster: "newPoster", description: "description"}) 
+        it("getMovies OK missing posterURL", async () => {
+            sinon.stub(moviesModel, "getAllMoviesWithSorting").returns([{posterURL: null, description: "description"}]) 
+            sinon.stub(moviesService, "getMoreDataForMovieFromThirdParty").returns({posterURL: "newPoster", description: "description"}) 
             sinon.stub(moviesService, "updateDatabaseMovie")
             
             const data = await moviesService.getMovies("sorting", 123, 1, "category", 1, "search") 
             
-            assertEquals(data[0].poster, "newPoster")
+            assertEquals(data[0].posterURL, "newPoster")
             assertEquals(data[0].description, "description")
         })
 
         it("getMovies OK missing description", async () => {
-            sinon.stub(moviesModel, "getAllMoviesWithSorting").returns([{poster: "poster", description: null}]) 
-            sinon.stub(moviesService, "getMoreDataForMovieFromThirdParty").returns({poster: "poster", description: "newDescription"}) 
+            sinon.stub(moviesModel, "getAllMoviesWithSorting").returns([{posterURL: "poster", description: null}]) 
+            sinon.stub(moviesService, "getMoreDataForMovieFromThirdParty").returns({posterURL: "poster", description: "newDescription"}) 
             sinon.stub(moviesService, "updateDatabaseMovie")
             
             const data = await moviesService.getMovies("sorting", 123, 1, "category", 1, "search") 
             
-            assertEquals(data[0].poster, "poster")
+            assertEquals(data[0].posterURL, "poster")
             assertEquals(data[0].description, "newDescription")
         })
 
         it("getMovies OK missing poster, no poster from third party, OK fallback", async () => {
-            sinon.stub(moviesModel, "getAllMoviesWithSorting").returns([{poster: null, description: "description"}]) 
-            sinon.stub(moviesService, "getMoreDataForMovieFromThirdParty").returns({poster: "N/A", description: "description"}) 
+            sinon.stub(moviesModel, "getAllMoviesWithSorting").returns([{posterURL: null, description: "description"}]) 
+            sinon.stub(moviesService, "getMoreDataForMovieFromThirdParty").returns({posterURL: "N/A", description: "description"}) 
             sinon.stub(moviesService, "getPosterFromFallbackThirdParty").returns("newPoster")
             sinon.stub(moviesService, "updateDatabaseMovie")
             
             const data = await moviesService.getMovies("sorting", 123, 1, "category", 1, "search") 
             
-            assertEquals(data[0].poster, "https://image.tmdb.org/t/p/w500" + "newPoster")
+            assertEquals(data[0].posterURL, "https://image.tmdb.org/t/p/w500" + "newPoster")
             assertEquals(data[0].description, "description")
         })
 
         it("getMovies OK missing poster, no poster from third party, null fallback", async () => {
-            sinon.stub(moviesModel, "getAllMoviesWithSorting").returns([{poster: null, description: "description"}]) 
-            sinon.stub(moviesService, "getMoreDataForMovieFromThirdParty").returns({poster: "N/A", description: "description"}) 
+            sinon.stub(moviesModel, "getAllMoviesWithSorting").returns([{posterURL: null, description: "description"}]) 
+            sinon.stub(moviesService, "getMoreDataForMovieFromThirdParty").returns({posterURL: "N/A", description: "description"}) 
             sinon.stub(moviesService, "getPosterFromFallbackThirdParty").returns(null)
             sinon.stub(moviesService, "updateDatabaseMovie")
             
             const data = await moviesService.getMovies("sorting", 123, 1, "category", 1, "search") 
             
-            assertEquals(data[0].poster, "N/A")
+            assertEquals(data[0].posterURL, "N/A")
             assertEquals(data[0].description, "description")
         })
     })
@@ -101,7 +101,7 @@ describe("Movie service testing", () => {
             const data = await moviesService.getMoreDataForMovieFromThirdParty(123) 
             
             assertEquals(data.description, "plot")
-            assertEquals(data.poster, "poster")
+            assertEquals(data.posterURL, "poster")
             assertEquals(data.genres[0], "genre")
             assertEquals(data.directors[0], "director")
             assertEquals(data.actors[0], "actor")

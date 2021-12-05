@@ -16,4 +16,6 @@ if(process.env.redis == "local"){
     client = null
 }
 
-module.exports.client = client
+module.exports.client = () => {
+    return client
+} 

@@ -1,9 +1,8 @@
 const firebaseConnection = require("../models/connections/firebaseAdminConnection")
-const auth = firebaseConnection.auth
 
 function validateJWT(req, res, next){
     if(process.env.jwtValidation == "enabled"){
-        auth.verifyIdToken(req.headers.authorization).then((decodedToken) => {
+        firebaseConnection.auth().verifyIdToken(req.headers.authorization).then((decodedToken) => {
             const uid = decodedToken.uid 
             if( uid == req.params.userId){
                 next()
@@ -11,7 +10,8 @@ function validateJWT(req, res, next){
                 res.status(403).send("Unauthorized: User id from the token does not match userId from the passed parameter")
             }
         }).catch((error) => {
-            res.status(400).send(error)
+            console.log("Error in jwt validation: \n" + error)
+            res.status(500).send("Internal server error when validating token.")
         }) 
     }else{
         next()

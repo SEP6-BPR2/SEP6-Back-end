@@ -1,7 +1,7 @@
 require('dotenv').config()
 process.env.GCPDBUSER = "testing" // Initialize testing env
-const genresModel = require('../models/genresModel') 
-const genresService = require('../services/genresService') 
+const genresModel = require('../../models/genresModel') 
+const genresService = require('../../services/genresService') 
 const sinon = require('sinon')
 
 describe("Genre service testing", () => {

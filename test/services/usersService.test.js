@@ -1,7 +1,7 @@
 require('dotenv').config()
 process.env.GCPDBUSER = "testing" // Initialize testing env
-const usersModel = require('../models/usersModel') 
-const usersService = require('../services/usersService') 
+const usersModel = require('../../models/usersModel') 
+const usersService = require('../../services/usersService') 
 const sinon = require('sinon')
 
 describe("User service testing", () => {

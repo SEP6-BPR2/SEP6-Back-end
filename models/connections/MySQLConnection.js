@@ -21,7 +21,9 @@ if(process.env.GCPDBUSER !== "testing"){
     connection = null 
 }
  
-module.exports.connection = connection 
+module.exports.connection = () => {
+    return connection
+} 
 
 // connection.escape().match
 //Uses prepared statements by replacing the ? in the queryString with values, in order.

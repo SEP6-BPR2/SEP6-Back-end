@@ -4,7 +4,7 @@ const favoritesService = require('../services/favoritesService')
 const { redisSet } = require("../middleware/redisMiddleware")
 const { param } = require('express-validator') 
 const { validate } = require("../middleware/validateMiddleware")
-const validateJWT = require('../middleware/jwtValidation')
+const validateJWT = require('../middleware/jwtValidationMiddleware')
 
 /**
  * Get list of favorite movies for user

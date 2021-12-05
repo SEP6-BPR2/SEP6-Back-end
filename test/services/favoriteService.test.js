@@ -1,8 +1,8 @@
 require('dotenv').config()
 process.env.GCPDBUSER = "testing" // Initialize testing env
-const favoritesModel = require('../models/favoritesModel') 
-const usersModel = require('../models/usersModel') 
-const favoritesService = require('../services/favoritesService') 
+const favoritesModel = require('../../models/favoritesModel') 
+const usersModel = require('../../models/usersModel') 
+const favoritesService = require('../../services/favoritesService') 
 const sinon = require('sinon')
 
 describe("Favorite service testing", () => {
