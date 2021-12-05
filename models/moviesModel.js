@@ -25,8 +25,8 @@ module.exports.getAllMoviesWithSorting = async (sorting, number, offset, categor
         searchSQL = "WHERE title like ? "
         parameters.push("%" + search + "%")
     }
-    // sorting = escapeSansQuotes(mysql, sorting)
-    // order = escapeSansQuotes(mysql,order)
+    sorting = escapeSansQuotes(mysql, sorting)
+    order = escapeSansQuotes(mysql,order)
     parameters.push(offset)
     parameters.push(number)
     const data = await mysql.query(
