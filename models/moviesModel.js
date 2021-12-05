@@ -1,6 +1,10 @@
 const mysql = require('./connections/MySQLConnection');
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
+const escapeSansQuotes = (connection, val) => {
+    return connection.escape(val).match(/^'(\w+)'$/)[1];
+}
+
 module.exports.getAllMoviesWithSorting = async (sorting, number, offset, category, descending, search) => {
     let parameters = []
     let order = descending == 1? "DESC": "ASC";
@@ -21,16 +25,15 @@ module.exports.getAllMoviesWithSorting = async (sorting, number, offset, categor
         searchSQL = "WHERE title like ? "
         parameters.push("%" + search + "%")
     }
-    
-    parameters.push(sorting)
+    // sorting = escapeSansQuotes(mysql, sorting)
+    // order = escapeSansQuotes(mysql,order)
     parameters.push(offset)
     parameters.push(number)
-
     const data = await mysql.query(
         "SELECT movies.id, movies.title, movies.posterURL as poster, substring(description,1,100) as description FROM movies " +
         categorySQL +
         searchSQL +
-        "ORDER BY ? "+ order +" " +
+        `ORDER BY ${sorting} ${order} ` +
         "LIMIT ?,? ",
         parameters
     );
@@ -165,7 +168,7 @@ module.exports.getMoviesWithNoPoster = async () => {
 
 
 
-module.exports.getSortingMethods = async () => {
+module.exports.getAttributesNames = async () => {
     return await mysql.query(
         "SELECT COLUMN_NAME as collumns " +
         "FROM INFORMATION_SCHEMA.COLUMNS " +

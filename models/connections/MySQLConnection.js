@@ -30,11 +30,14 @@ module.exports.connection = connection;
 //If they are string numbers they will have qoutes on them.
 module.exports.query = async (queryString, values) => {
     return new Promise((resolve, reject) => {
-        connection.query(queryString, values, function (error, elements) {
+        let query = connection.query(queryString, values, function (error, elements) {
             if(error){
                 return reject(error);
             }
             return resolve(elements);
         });
+        console.log(query.sql)
     });
 };
+
+module.exports.escape = value => mysql.escape(value)
