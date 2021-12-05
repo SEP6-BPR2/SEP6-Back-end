@@ -11,7 +11,7 @@ function validateJWT(req, res, next){
             }
         }).catch((error) => {
             console.log("Error in jwt validation: \n" + error)
-            res.status(500).send("Internal server error when validating token.")
+            res.status(403).send("Invalid token. Check if expired")
         }) 
     }else{
         next()

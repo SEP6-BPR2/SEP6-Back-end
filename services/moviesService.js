@@ -78,8 +78,8 @@ module.exports.getMoreDataForMovieFromThirdParty = async (movieId) => {
         actors: [
             ...object.Actors.split(", ")
         ],
-        imdbRating: object.imdbRating,
-        imdbVotes: object.imdbVotes,
+        rating: object.rating,
+        votes: object.votes,
         runtime: object.Runtime
     }
 }

@@ -90,8 +90,8 @@ describe("Movie service testing", () => {
                             Genre: "genre, genre1",
                             Director: "director, director1",
                             Actors: "actor, actor1",
-                            imdbRating: "imdbRating",
-                            imdbVotes: "imdbVotes",
+                            rating: "rating",
+                            votes: "votes",
                             Runtime: "runtime",
                         }
                     )
@@ -105,8 +105,8 @@ describe("Movie service testing", () => {
             assertEquals(data.genres[0], "genre")
             assertEquals(data.directors[0], "director")
             assertEquals(data.actors[0], "actor")
-            assertEquals(data.imdbRating, "imdbRating")
-            assertEquals(data.imdbVotes, "imdbVotes")
+            assertEquals(data.rating, "rating")
+            assertEquals(data.votes, "votes")
             assertEquals(data.runtime, "runtime")
         })
     })
