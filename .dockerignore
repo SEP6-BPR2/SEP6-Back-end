@@ -1,6 +1,6 @@
 node_modules
 sql
 terraform
-.env
 README.md
 .gitignore
+.nyc_output
