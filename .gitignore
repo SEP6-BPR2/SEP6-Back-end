@@ -146,3 +146,4 @@ terraform.rc
 .env
 terraform/variables.tf
 
+admin-service.json

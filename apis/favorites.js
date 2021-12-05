@@ -4,6 +4,7 @@ const favoritesService = require('../services/favoritesService');
 const { redisSet } = require("../middleware/redisMiddleware")
 const { param } = require('express-validator');
 const { validate } = require("../middleware/validateMiddleware")
+const validateJWT = require('../middleware/JwtValidation')
 
 /**
  * Get list of favorite movies for user
@@ -19,8 +20,6 @@ async (req, res) => {
         req.params.userId
     );
 
-    // redisSet(req.originalUrl, data);
-
     res.send(data)
 });
 
@@ -35,8 +34,8 @@ router.post("/:userId/:movieId",
     param("userId").notEmpty(), 
     param("movieId").notEmpty().isInt(),
     validate, 
+    validateJWT,
 async (req, res) => {
-    //Need token validation
     const status = await favoritesService.addMovieToFavoritesList(
         req.params.userId,
         parseInt(req.params.movieId)
@@ -56,8 +55,8 @@ router.delete("/:userId/:movieId",
     param("userId").notEmpty(), 
     param("movieId").notEmpty().isInt(),
     validate, 
+    validateJWT,
 async (req, res) => {
-    //Need token validation
     const status = await favoritesService.removeMovieFromFavoritesList(
         req.params.userId,
         parseInt(req.params.movieId)
