@@ -106,11 +106,9 @@ async (req, res) => {
  * 
  * @example - GET {BaseURL}/movies/sorting
  */
-router.get("/sorting", async (req, res) => {
-    const data = await moviesService.getSortingMethods() 
-    
-    redisSet(req.originalUrl, data) 
-
+router.get("/sorting",  (req, res) => {
+    const data = moviesService.getSortingMethods();
+    redisSet(req.originalUrl, data);
     res.send(data)
 }) 
 
