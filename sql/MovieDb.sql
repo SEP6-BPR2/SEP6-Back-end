@@ -5,9 +5,9 @@ CREATE TABLE movies (
 	description		TEXT,
 	runtime 		TEXT,
 	posterURL 		TEXT,
-	imdbRating 	    TEXT,
-	imdbVotes		TEXT,
-	lastUpdated		DATETIME ,
+	rating 	    	TEXT,
+	votes			TEXT,
+	lastUpdated		DATETIME 
 ) 
 
 update movies set posterURL = NULL where posterURL is not NULL

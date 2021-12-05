@@ -25,4 +25,6 @@ if( process.env.jwtValidation == "enabled" && process.env.use_google_credential_
 }
 
 
-module.exports.auth = auth 
+module.exports.auth = () => {
+    return auth
+} 

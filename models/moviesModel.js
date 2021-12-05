@@ -31,8 +31,10 @@ module.exports.getAllMoviesWithSorting = async (sorting, number, offset, categor
     // order = escapeSansQuotes(mysql,order)
     parameters.push(offset)
     parameters.push(number)
-    const data = await mysql.query(
-        "SELECT movies.id, movies.title, movies.posterURL as poster, substring(description,1,100) as description FROM movies " +
+
+    return mysql.query(
+        "SELECT movies.id, movies.title, movies.posterURL, substring(description,1,100) as description " +
+        "FROM movies " +
         categorySQL +
         searchSQL +
         `ORDER BY ${sorting} ${order} ` +
@@ -43,7 +45,7 @@ module.exports.getAllMoviesWithSorting = async (sorting, number, offset, categor
 }
 
 function escapeSansQuotes(criterion) {
-    return mysql.connection.escape(criterion).match(/^'(\w+)'$/)[1] 
+    return mysql.connection().escape(criterion).match(/^'(\w+)'$/)[1] 
 }
 
 module.exports.getMovieByIDThirdParty = async (id) => {
@@ -64,16 +66,16 @@ module.exports.updateMovie = async (movie) => {
         "SET movies.posterURL = ?, " +
         "movies.description = ?, " +
         "movies.runtime = ?, " +
-        "movies.imdbRating = ? , " +
-        "movies.imdbVotes = ? , " +
+        "movies.rating = ? , " +
+        "movies.votes = ? , " +
         "movies.lastUpdated = NOW() " +
         "WHERE movies.id = ? ",
         [
-            movie.poster, 
+            movie.posterURL, 
             movie.description, 
             movie.runtime, 
-            movie.imdbRating, 
-            movie.imdbVotes, 
+            movie.rating, 
+            movie.votes, 
             movie.id
         ]
     ) 

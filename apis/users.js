@@ -3,7 +3,7 @@ const router = express.Router()
 const usersService = require('../services/usersService') 
 const { param } = require('express-validator') 
 const { validate } = require("../middleware/validateMiddleware")
-const validateJWT = require('../middleware/jwtValidation')
+const validateJWT = require('../middleware/jwtValidationMiddleware')
 
 /**
  * Register user in the database

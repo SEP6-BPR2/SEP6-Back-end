@@ -1,9 +1,9 @@
 const express = require('express') 
 const router = express.Router() 
 const commentService = require("../services/commentService")
-const { param, body } = require('express-validator') 
+const { param, body } = require('express-validator')
 const { validate } = require("../middleware/validateMiddleware")
-const validateJWT = require('../middleware/jwtValidation')
+const validateJWT = require('../middleware/jwtValidationMiddleware')
 
 /**
  * Get comments that are in movie description
@@ -12,7 +12,7 @@ const validateJWT = require('../middleware/jwtValidation')
  * @example - GET {BaseURL}/comments/123456
  */
 router.get("/:movieId", 
-    param("movieId").notEmpty().isInt(), 
+    param("movieId").notEmpty().isInt({min:1 ,max:9999999}), 
     validate, 
 async (req, res) => {
     const data = await commentService.getComments(
@@ -35,7 +35,7 @@ async (req, res) => {
  */
 router.post("/:userId/:movieId", 
     param("userId").notEmpty(),
-    param("movieId").notEmpty().isInt(), 
+    param("movieId").notEmpty().isInt({min:1 ,max:9999999}), 
     body("replyCommentId").optional().isInt(),
     body("text").notEmpty(),
     validate, 

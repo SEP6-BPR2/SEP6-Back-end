@@ -17,5 +17,5 @@ module.exports.registerUser = async (userId, nickname) => {
 
 module.exports.getUser = async (userId) => {
     const data = await userModel.getUser(userId)
-    return data[0] 
+    return data[0]
 }

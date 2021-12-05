@@ -1,7 +1,7 @@
 require('dotenv').config()
 process.env.GCPDBUSER = "testing" // Initialize testing env
-const commentModel = require('../models/commentModel') 
-const commentService = require('../services/commentService') 
+const commentModel = require('../../models/commentModel') 
+const commentService = require('../../services/commentService') 
 const sinon = require('sinon')
 
 describe("Comment service testing", () => {

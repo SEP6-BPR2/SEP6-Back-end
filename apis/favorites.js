@@ -4,7 +4,7 @@ const favoritesService = require('../services/favoritesService')
 const { redisSet } = require("../middleware/redisMiddleware")
 const { param } = require('express-validator') 
 const { validate } = require("../middleware/validateMiddleware")
-const validateJWT = require('../middleware/jwtValidation')
+const validateJWT = require('../middleware/jwtValidationMiddleware')
 
 /**
  * Get list of favorite movies for user
@@ -53,7 +53,7 @@ async (req, res) => {
  */
 router.delete("/:userId/:movieId", 
     param("userId").notEmpty(), 
-    param("movieId").notEmpty().isInt(),
+    param("movieId").notEmpty().isInt({min:1 ,max:9999999}),
     validate, 
     validateJWT,
 async (req, res) => {
