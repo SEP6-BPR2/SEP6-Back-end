@@ -1,4 +1,4 @@
-const { initializeApp, applicationDefault, defaultAppConfig} = require('firebase-admin/app') 
+const { initializeApp, applicationDefault} = require('firebase-admin/app') 
 const { getAuth } = require("firebase-admin/auth") 
 
 let defaultApp
