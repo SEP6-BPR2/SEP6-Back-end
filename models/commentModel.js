@@ -1,10 +1,11 @@
 const mysql = require('./connections/mySQLConnection') 
 
-module.exports.getCommentsForMovie = async (movieId) => {
+module.exports.getCommentsForMovie = async (movieId, number, offset) => {
     return mysql.query(
         "SELECT * FROM movieComment " +
-        "WHERE movieComment.movieId = ?",
-        [movieId]
+        "WHERE movieComment.movieId = ?" +
+        "LMIT ?,?",
+        [movieId, offset, number]
     ) 
 }
 
