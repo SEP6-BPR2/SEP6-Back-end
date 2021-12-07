@@ -11,12 +11,16 @@ const validateJWT = require('../middleware/jwtValidationMiddleware')
  *
  * @example - GET {BaseURL}/comments/123456
  */
-router.get("/:movieId", 
-    param("movieId").notEmpty().isInt({min:1 ,max:9999999}), 
+router.get("/:movieId/:number/:offset", 
+    param("movieId").isInt({min:1 ,max:9999999}), 
+    param("number").isInt({min:1 ,max:1000}),
+    param("offset").isInt({min:0 ,max:9999999}),
     validate, 
 async (req, res) => {
     const data = await commentService.getComments(
-        parseInt(req.params.movieId)
+        parseInt(req.params.movieId),
+        parseInt(req.params.number),
+        parseInt(req.params.offset)
     ) 
 
     res.send(data)

@@ -1,7 +1,7 @@
 const commentModel = require('../models/commentModel') 
 
-module.exports.getComments = async (movieId) => {
-    return commentModel.getCommentsForMovie(movieId) 
+module.exports.getComments = async (movieId, number, offset) => {
+    return commentModel.getCommentsForMovie(movieId, number, offset) 
 }
 
 module.exports.postComment = async (userId, movieId, commentBody) => {

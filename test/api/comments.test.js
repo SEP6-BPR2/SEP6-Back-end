@@ -22,7 +22,7 @@ describe("Users api testing", () => {
         it("get comments OK", async () => {
             sinon.stub(commentService, "getComments").returns("Test worked")
 
-            const response = await request.get("/comments/123456")
+            const response = await request.get("/comments/123456/10/2")
 
             assertEquals(response.text, "Test worked")
         })
@@ -30,17 +30,17 @@ describe("Users api testing", () => {
         it("get comments ERROR lower bound", async () => {
             sinon.stub(commentService, "getComments").returns("Test worked")
 
-            const response = await request.get("/comments/0")
+            const response = await request.get("/comments/0/0/-1")
 
             const data = JSON.parse(response.text)
 
-            assertEquals(data.errors.length, 1)
+            assertEquals(data.errors.length, 3)
         })
 
         it("get comments OK lower bound", async () => {
             sinon.stub(commentService, "getComments").returns("Test worked")
 
-            const response = await request.get("/comments/1")
+            const response = await request.get("/comments/1/1/0")
 
             assertEquals(response.text, "Test worked")
         })
@@ -48,17 +48,17 @@ describe("Users api testing", () => {
         it("get comments ERROR upper bound", async () => {
             sinon.stub(commentService, "getComments").returns("Test worked")
 
-            const response = await request.get("/comments/99999991")
+            const response = await request.get("/comments/10000000/1001/10000000")
 
             const data = JSON.parse(response.text)
 
-            assertEquals(data.errors.length, 1)
+            assertEquals(data.errors.length, 3)
         })
 
         it("get comments OK upper bound", async () => {
             sinon.stub(commentService, "getComments").returns("Test worked")
 
-            const response = await request.get("/comments/9999999")
+            const response = await request.get("/comments/9999999/1000/9999999")
 
             assertEquals(response.text, "Test worked")
         })

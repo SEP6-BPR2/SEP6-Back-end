@@ -13,7 +13,7 @@ describe("Comment service testing", () => {
     it("getComments", async () => {
         sinon.stub(commentModel, "getCommentsForMovie").returns("test worked") 
 
-        const data = await commentService.getComments(123456)
+        const data = await commentService.getComments(123456, 1, 1)
         
         assertEquals(data, "test worked")
     }) 
