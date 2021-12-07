@@ -13,8 +13,8 @@ const validateJWT = require('../middleware/jwtValidationMiddleware')
  * @example - POST {BaseURL}/users/register/123456/rokasbarasa1
  */
 router.post("/register/:userId/:nickname", 
-    param("userId").notEmpty(), 
-    param("nickname").notEmpty(),
+    param("userId").isLength({min: 28, max: 35}), 
+    param("nickname").isLength({min: 5, max: 50}),
     validate, 
     validateJWT,
 async (req, res) => {
@@ -32,7 +32,7 @@ async (req, res) => {
  * @example - GET {BaseURL}/users/123456
  */
 router.get("/:userId", 
-    param("userId").notEmpty(), 
+    param("userId").isLength({min: 28, max: 35}), 
     validate, 
 async (req, res) => {
     const data = await usersService.getUser(
