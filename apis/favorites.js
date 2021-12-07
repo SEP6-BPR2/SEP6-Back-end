@@ -13,7 +13,7 @@ const validateJWT = require('../middleware/jwtValidationMiddleware')
  * @example - GET {BaseURL}/favorites/123456
  */
 router.get("/:userId", 
-    param("userId", "Bad userId").notEmpty(),
+    param("userId").isLength({min: 28, max: 35}),
     validate, 
 async (req, res) => {    
     const data = await favoritesService.getFavoritesList(
@@ -31,8 +31,8 @@ async (req, res) => {
  * @example - POST {BaseURL}/favorites/123456/146870
  */
 router.post("/:userId/:movieId", 
-    param("userId").notEmpty(), 
-    param("movieId").notEmpty().isInt(),
+    param("userId").isLength({min: 28, max: 35}), 
+    param("movieId").isInt({min:1 ,max:9999999}),
     validate, 
     validateJWT,
 async (req, res) => {
@@ -52,8 +52,8 @@ async (req, res) => {
  * @example - DELETE {BaseURL}/favorites/123456/146870
  */
 router.delete("/:userId/:movieId", 
-    param("userId").notEmpty(), 
-    param("movieId").notEmpty().isInt({min:1 ,max:9999999}),
+    param("userId").isLength({min: 28, max: 35}), 
+    param("movieId").isInt({min:1 ,max:9999999}),
     validate, 
     validateJWT,
 async (req, res) => {
@@ -73,8 +73,8 @@ async (req, res) => {
  * @example - GET {BaseURL}/favorites/inFavorites/123456/146870
  */
 router.get("/inFavorites/:userId/:movieId", 
-    param("userId").notEmpty(), 
-    param("movieId").notEmpty().isInt(),
+    param("userId").isLength({min: 28, max: 35}), 
+    param("movieId").isInt({min:1 ,max:9999999}),
     validate, 
 async (req, res) => {
     const data = await favoritesService.isMovieInUserFavorites(
@@ -84,4 +84,4 @@ async (req, res) => {
     res.send(data)
 }) 
 
-module.exports = router 
+module.exports = router

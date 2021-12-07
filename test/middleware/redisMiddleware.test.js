@@ -184,5 +184,5 @@ describe("redis middleware testing", () => {
 })
 
 function assertEquals(value1, value2){
-    if(value1 != value2) throw error
+    if(value1 != value2) throw Error("Failed assert")
 }

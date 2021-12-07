@@ -129,6 +129,24 @@ describe("jwt validation middleware testing", () => {
             validateJWT(req, res, next)
         })
 
+        it("validateJWT ERROR no authorization defined", async () => {
+            const res = {
+                status: (status) => {
+                    return {send: (text) =>{
+                        assertEquals(status, 403)
+                        assertEquals(text, "Invalid token. Token undefined")
+                    }}
+                }
+            }
+            const next = () => {}
+            const req = {
+                headers: {}
+            }
+            process.env.jwtValidation = "enabled"
+
+            validateJWT(req, res, next)
+        })
+
         it("validateJWT disabled", async () => {
 
             const next = () => {}
@@ -141,5 +159,5 @@ describe("jwt validation middleware testing", () => {
 })
 
 function assertEquals(value1, value2){
-    if(value1 != value2) throw error
+    if(value1 != value2) throw Error("Failed assert")
 }

@@ -31,13 +31,13 @@ async (req, res) => {
  * {
  *     "replyCommentId": null,
  *     "text": "TEXT FOR COMMENT HERE"y
- * }
+ * } 
  */
 router.post("/:userId/:movieId", 
-    param("userId").notEmpty(),
-    param("movieId").notEmpty().isInt({min:1 ,max:9999999}), 
-    body("replyCommentId").optional().isInt(),
-    body("text").notEmpty(),
+    param("userId").isLength({min: 28, max: 35}),
+    param("movieId").isInt({min:1 ,max:9999999}), 
+    body("replyCommentId").custom((value) => validateNullOrInt(value)),
+    body("text").isLength({min:1 ,max:1000}),
     validate, 
     validateJWT,
 async (req, res) => {
@@ -49,5 +49,18 @@ async (req, res) => {
 
     res.sendStatus(200)
 }) 
+
+
+function validateNullOrInt(value){
+    if (value == null || !isNaN(parseInt(value))) {
+        if(value == null || value >= 1 && value <= 9999999){
+            return true;
+        }else{
+            throw new Error('Value is not valid');
+        }
+    }else{
+        throw new Error('Value is not null or int');
+    }
+}
 
 module.exports = router 

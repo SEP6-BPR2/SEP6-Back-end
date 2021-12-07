@@ -6,13 +6,6 @@ const { param } = require('express-validator')
 const { validate } = require("../middleware/validateMiddleware")
 
 /**
- * Endpoint to test the connection to router of movie
- */
-router.get("/test", async (req, res) => {
-    res.send("Movies endpoint")
-}) 
-
-/**
  * Get list of movies
  * @param sorting - string, what parameter in movie object to sort by
  * @param number - int, how many movies to return
@@ -23,11 +16,11 @@ router.get("/test", async (req, res) => {
  * @example - GET {BaseURL}/movies/list/title/10/0/Drama/1
  */
 router.get("/list/:sorting/:number/:offset/:category/:descending", 
-    param("sorting").notEmpty().not().isInt(), 
-    param("number").notEmpty().isInt({min:1 ,max:1000}),
-    param("offset").notEmpty().isInt({min:0}),
-    param("category").notEmpty().isString(),
-    param("descending").notEmpty().isInt({min:0, max:1}),
+    param("sorting").isLength({min: 3, max: 20}).not().isInt(), 
+    param("number").isInt({min:1 ,max:1000}),
+    param("offset").isInt({min:0 ,max:9999999}),
+    param("category").isLength({min: 3, max: 20}).not().isInt(),
+    param("descending").isInt({min:0, max:1}),
     validate,
 async (req, res) => {
     const data = await moviesService.getListOfMovies(
@@ -52,9 +45,9 @@ async (req, res) => {
  * @example - GET {BaseURL}/movies/details/54724/1/123456
  */
 router.get("/details/:movieId/:checkFavorites/:userId",
-    param("movieId").notEmpty().isInt({min:1 ,max:9999999}), 
-    param("checkFavorites").notEmpty().isInt({min:0, max:1}),
-    param("userId").optional(), 
+    param("movieId").isInt({min:1 ,max:9999999}), 
+    param("checkFavorites").isInt({min:0, max:1}),
+    param("userId").custom((value, {req}) => checkUserIdOrNull(value, req.params.checkFavorites)), 
     validate,
 async (req, res) => {
     let data = await moviesService.getMovieDetailsAndFavorites(
@@ -78,12 +71,12 @@ async (req, res) => {
  * @example - GET {BaseURL}/movies/search/title/10/0/Drama/1/Sata
  */
 router.get("/search/:sorting/:number/:offset/:category/:descending/:movieName", 
-    param("sorting").notEmpty().isString(), 
-    param("number").notEmpty().isInt({min:1 ,max:1000}),
-    param("offset").notEmpty().isInt({min:0}),
-    param("category").notEmpty().isString(),
-    param("descending").notEmpty().isInt({min:0, max:1}),
-    param("movieName").notEmpty(),
+    param("sorting").isLength({min: 3, max: 20}).not().isInt(), 
+    param("number").isInt({min:1 ,max:1000}),
+    param("offset").isInt({min:0 ,max:9999999}),
+    param("category").isLength({min: 3, max: 20}).not().isInt(),
+    param("descending").isInt({min:0, max:1}),
+    param("movieName").isLength({min: 1, max: 100}),
     validate,
 async (req, res) => {
     const data = await moviesService.getBySearch(
@@ -121,5 +114,19 @@ router.get("/update", async (req, res) => {
     moviesService.update() 
     res.sendStatus(200)
 }) 
+
+function checkUserIdOrNull(value, checkUserId){
+    if(checkUserId == 1 ){
+        if(value.length >= 28 && value.length <= 35 ){
+            return true
+        }else{
+            throw new Error('Value is out of bounds');
+        }
+    }else if(checkUserId == 0 && value == "none"){
+        return true
+    }else{
+        throw new Error('User id must be "none" if disabled');
+    }
+}
 
 module.exports = router 
