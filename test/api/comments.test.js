@@ -1,5 +1,6 @@
 const supertest = require("supertest")
 process.env.jwtValidation = "disabled"
+process.env.GCPDBUSER = "testing"
 process.env.redis = "disabled"
 const server = require("../../server")
 const app = server.startServer()
