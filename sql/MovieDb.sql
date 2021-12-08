@@ -2,11 +2,13 @@ CREATE TABLE movies (
 	id				INTEGER NOT NULL,
 	title			TEXT NOT NULL,
 	year			NUMERIC NOT NULL,
+	month			NUMERIC,
+	day   			NUMERIC
 	description		TEXT,
 	runtime 		TEXT,
 	posterURL 		TEXT,
-	rating 	    	TEXT,
-	votes			TEXT,
+	rating 	    	FLOAT,
+	votes			INTEGER,
 	lastUpdated		DATETIME 
 ) 
 
@@ -29,6 +31,7 @@ CREATE TABLE person (
 	firstName 		TEXT NOT NULL,
 	lastName 		TEXT NOT NULL,
 	description 	TEXT,
+	photoURL 		TEXT,
 	PRIMARY KEY(personId)
 ) 
 

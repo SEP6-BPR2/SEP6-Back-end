@@ -1,7 +1,11 @@
 const commentModel = require('../models/commentModel') 
 
-module.exports.getComments = async (movieId, number, offset) => {
-    return commentModel.getCommentsForMovie(movieId, number, offset) 
+module.exports. getCommentsFirstOrder = async (movieId, number, offset) => {
+    return commentModel.getFirstOrderCommentsForMovie(movieId, number, offset) 
+}
+
+module.exports. getCommentsSecondOrder = async (movieId, commentId, number, offset) => {
+    return commentModel.getSecondOrderCommentsForMovie(movieId, commentId, number, offset) 
 }
 
 module.exports.postComment = async (userId, movieId, commentBody) => {

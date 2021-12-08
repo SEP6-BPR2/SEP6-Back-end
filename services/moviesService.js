@@ -1,9 +1,21 @@
 const moviesModel = require('../models/moviesModel') 
 const favoritesService = require('../services/favoritesService') 
+const personModel = require('../models/personModel') 
 
 const sortingOptionsDTO = {sortingOptions: ['year', 'title', 'rating', 'votes', 'runtime']}
 
 module.exports.getListOfMovies = async (sorting, number, offset, category, descending, search) => {
+    return module.exports.getMovies(
+        sorting, 
+        number, 
+        offset, 
+        category, 
+        descending, 
+        search
+    )
+}
+
+module.exports.getBySearch = async (sorting, number, offset, category, descending, search) => {
     return module.exports.getMovies(
         sorting, 
         number, 
@@ -28,18 +40,14 @@ module.exports.getMovies = async (sorting, number, offset, category, descending,
     for(let i = 0;  i< movies.length;  i++){
         if(movies[i].posterURL == null || movies[i].description == null){
 
-            let otherData = await module.exports.getMoreDataForMovieFromThirdParty(movies[i].id)
-            
+            const otherData = await module.exports.getMoreDataForMovieFromThirdParty(movies[i].id)
             movies[i].description = otherData.description.substring(0, 99) 
-
             let updatedMovie = {
                 ...movies[i],
                 ...otherData
             }
-
-            //If poster is 
+            
             if(otherData.posterURL == "N/A"){
-
                 const posterURL = await module.exports.getPosterFromFallbackThirdParty(movies[i].id)
                 if(posterURL != null){
                     movies[i].posterURL = "https://image.tmdb.org/t/p/w500" + posterURL
@@ -47,11 +55,8 @@ module.exports.getMovies = async (sorting, number, offset, category, descending,
                 }else{
                     movies[i].posterURL = "N/A"
                 }
-
             }else{
-                
                 movies[i].posterURL = otherData.posterURL
-
             }
 
             module.exports.updateDatabaseMovie(updatedMovie)
@@ -62,11 +67,43 @@ module.exports.getMovies = async (sorting, number, offset, category, descending,
     return movies 
 }
 
+module.exports.getPhotosForPersons = async (movie) => {
+    
+    for(let i = 0; i < movie.directors.length; i++){
+        let personData = await personModel.searchActorByName(movie.directors[i].name)
+        const body = await personData.text()
+        const object = JSON.parse(body)
+        if(object.results.length > 0 && object.results[0].hasOwnProperty("profile_path") && object.results[0].profile_path != null){
+            movie.directors[i].photoURL = "https://image.tmdb.org/t/p/w500" + object.results[0].profile_path
+        }else{
+            movie.directors[i].photoURL = "N/A"
+        }
+    }
+
+    for(let i = 0; i < movie.actors.length; i++){
+        let personData = await personModel.searchActorByName(movie.actors[i].name)
+        const body = await personData.text()
+        const object = JSON.parse(body)
+        if(object.results.length > 0 && object.results[0].hasOwnProperty("profile_path") && object.results[0].profile_path != null){
+            movie.actors[i].photoURL = "https://image.tmdb.org/t/p/w500" + object.results[0].profile_path
+        }else{
+            movie.actors[i].photoURL = "N/A"
+        }
+    }
+    
+    return movie
+}
+
 module.exports.getMoreDataForMovieFromThirdParty = async (movieId) => {
     const stringId = module.exports.convertIdForAPI(movieId)
     const response = await moviesModel.getMovieByIDThirdParty(stringId)
     const body = await response.text()
     const object = JSON.parse(body)
+
+    let votes = object.votes.replace(',', '')
+    votes = (votes != null && !isNaN(parseInt(votes)))? parseInt(votes) : 0
+    const rating = (object.rating != null && !isNaN(parseFloat(object.rating)))? parseFloat(object.rating) : 0.0
+    const runtime = object.Runtime != "N/A"? object.Runtime : "0 min"
 
     return {
         description: object.Plot,
@@ -74,15 +111,15 @@ module.exports.getMoreDataForMovieFromThirdParty = async (movieId) => {
         genres:[
             ...object.Genre.split(", ")
         ],
-        directors: [
-            ...object.Director.split(", "),
-        ],
-        actors: [
-            ...object.Actors.split(", ")
-        ],
-        rating: object.rating,
-        votes: object.votes,
-        runtime: object.Runtime
+        directors: object.Director.split(", ").map((value) => {
+            return {name: value, photoURL: null}
+        }),
+        actors: object.Actors.split(", ").map((value) => {
+            return {name: value, photoURL: null}
+        }),
+        rating: rating ,
+        votes: votes,
+        runtime: runtime
     }
 }
 
@@ -109,6 +146,9 @@ module.exports.convertIdForAPI = (id) => {
 
 module.exports.updateDatabaseMovie = async (movie) => {
 
+    //Get photos for people in movie
+    movie = await module.exports.getPhotosForPersons(movie)
+
     //Genre
     for(let i = 0;  i< movie.genres.length;  i++){
         const genreInDb = await moviesModel.getGenreByName(movie.genres[i])
@@ -124,7 +164,7 @@ module.exports.updateDatabaseMovie = async (movie) => {
 
     //Actors
     for(let i = 0;  i< movie.actors.length;  i++){
-        const actor = movie.actors[i].split(' ') 
+        const actor = movie.actors[i].name.split(' ') 
         if (actor.length == 1){
             actor.push("") 
         }
@@ -132,7 +172,7 @@ module.exports.updateDatabaseMovie = async (movie) => {
 
         if(personInDb.length == 0){
 
-            const personInserted = await moviesModel.insertPerson(actor[0], actor[1])
+            const personInserted = await moviesModel.insertPerson(actor[0], actor[1], movie.actors[i].photoURL)
             await moviesModel.insertMovieToPerson(movie.id, personInserted.insertId, 1)
 
         }else{
@@ -144,7 +184,7 @@ module.exports.updateDatabaseMovie = async (movie) => {
 
     //Directors
     for(let i = 0;  i< movie.directors.length;  i++){
-        const director = movie.directors[i].split(' ') 
+        const director = movie.directors[i].name.split(' ') 
 
         if (director.length == 1){
             director.push("") 
@@ -154,7 +194,7 @@ module.exports.updateDatabaseMovie = async (movie) => {
 
         if(directorInDb.length == 0){
 
-            const directorInserted = await moviesModel.insertPerson(director[0], director[1])
+            const directorInserted = await moviesModel.insertPerson(director[0], director[1], movie.directors[i].photoURL)
             await moviesModel.insertMovieToPerson(movie.id, directorInserted.insertId, 2)
 
         }else{
@@ -163,7 +203,7 @@ module.exports.updateDatabaseMovie = async (movie) => {
     }
 
     //Update the movie object.
-    await moviesModel.updateMovie(movie)
+    moviesModel.updateMovie(movie)
     console.log("Updated object")
 }
 
@@ -189,16 +229,18 @@ module.exports.getMovieDetails = async (movieId) => {
     if(movie.length > 0){
         movie = movie[0] 
 
-        if(!movie.hasOwnProperty("posterURL")){
+        if(movie.posterURL == null){
             const otherData = await module.exports.getMoreDataForMovieFromThirdParty(movie["id"])
+            
             let newMovie = {
                 ...movie,
                 ...otherData
             }
-            
-            delete newMovie.posterURL
-            
+
+            newMovie = await module.exports.getPhotosForPersons(newMovie)
+                        
             module.exports.updateDatabaseMovie(newMovie)
+
             return newMovie
         }else{
     
@@ -213,9 +255,9 @@ module.exports.getMovieDetails = async (movieId) => {
         
             for(let i = 0;  i < people.length;   i++){
                 if (people[i].roleName == "Director"){
-                    directors.push(people[i].name)
+                    directors.push({name: people[i].name, photoURL: people[i].photoURL})
                 }else{
-                    actors.push(people[i].name)
+                    actors.push({name: people[i].name, photoURL: people[i].photoURL})
                 }
             }
     
@@ -233,25 +275,40 @@ module.exports.getMovieDetails = async (movieId) => {
     }
 }
 
-module.exports.getBySearch = async (sorting, number, offset, category, descending, search) => {
-    return module.exports.getMovies(sorting, number, offset, category, descending, search)
-}
-
 module.exports.update = async () => {
-    let movies = await moviesModel.getMoviesWithNoPoster()
-    let numberPosters = 0
+    // let movies = await moviesModel.getMoviesWithNoPoster()
+    // let numberPosters = 0
 
-    for(let i = 0;  i < movies.length;  i++){
-        let posterURL = await module.exports.getPosterFromFallbackThirdParty(movies[i].id)
-        if(posterURL != null){
-            numberPosters++
-            console.log("https://image.tmdb.org/t/p/w500" + posterURL)
-            movies[i].posterURL = "https://image.tmdb.org/t/p/w500" + posterURL
-            moviesModel.updateMovie(movies[i])
+    // for(let i = 0;  i < movies.length;  i++){
+    //     let posterURL = await module.exports.getPosterFromFallbackThirdParty(movies[i].id)
+    //     if(posterURL != null){
+    //         numberPosters++
+    //         console.log("https://image.tmdb.org/t/p/w500" + posterURL)
+    //         movies[i].posterURL = "https://image.tmdb.org/t/p/w500" + posterURL
+    //         moviesModel.updateMovie(movies[i])
+    //     }
+    // }
+
+    // console.log("Movies with posters: " + numberPosters + "/" + movies.length)
+
+    let persons = await moviesModel.getPersonsWithoutAPhoto()
+    let numberPhotos = 0
+
+    for(let i = 0;  i < persons.length;  i++){
+        let personData = await personModel.searchActorByName(persons[i].firstName + " " + persons[i].lastName)
+        const body = await personData.text()
+        const object = JSON.parse(body)
+        if(object.results.length > 0 && object.results[0].hasOwnProperty("profile_path") && object.results[0].profile_path != null){
+            let photoURL = "https://image.tmdb.org/t/p/w500" + object.results[0].profile_path
+            numberPhotos++
+            console.log(photoURL)
+            persons[i].photoURL = photoURL
+            moviesModel.updatePerson(persons[i])
         }
     }
 
-    console.log("Movies with posters: " + numberPosters + "/" + movies.length)
+    console.log("Movies with posters: " + numberPhotos + "/" + persons.length)
+
     return 200 
 }
 

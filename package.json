@@ -4,7 +4,7 @@
     "scripts": {
         "start": "node index",
         "dev": "nodemon index",
-        "test": "mocha --recursive"
+        "test": "nyc --reporter=text mocha --recursive"
     },
     "dependencies": {
         "cors": "^2.8.5",
