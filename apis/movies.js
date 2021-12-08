@@ -50,7 +50,7 @@ router.get("/details/:movieId/:checkFavorites/:userId",
     param("userId").custom((value, {req}) => checkUserIdOrNull(value, req.params.checkFavorites)), 
     validate,
 async (req, res) => {
-    let data = await moviesService.getMovieDetailsAndFavorites(
+    const data = await moviesService.getMovieDetailsAndFavorites(
         parseInt(req.params.movieId),
         parseInt(req.params.checkFavorites),
         req.params.userId
@@ -106,7 +106,7 @@ router.get("/sorting",  (req, res) => {
 }) 
 
 /**
- * Find movies without a poster and try to update the posters from fallback third party api
+ * TEMPORARY Find movies without a poster and try to update the posters from fallback third party api
  * 
  * @example - GET {BaseURL}/movies/update
  */

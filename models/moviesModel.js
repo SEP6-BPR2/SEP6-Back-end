@@ -117,10 +117,10 @@ module.exports.getPersonByName = async (firstName, lastName) => {
     ) 
 }
 
-module.exports.insertPerson = async (firstName, lastName) => {
+module.exports.insertPerson = async (firstName, lastName, photoURL) => {
     return mysql.query(
-        "INSERT INTO person (firstName, lastName) VALUES (?, ?) ",
-        [firstName, lastName]
+        "INSERT INTO person (firstName, lastName, photoURL) VALUES (?, ?, ?) ",
+        [firstName, lastName, photoURL]
     ) 
 }
 
@@ -141,7 +141,7 @@ module.exports.getMovieByMovieId = async (movieId) => {
 
 module.exports.getPeopleByMovieId = async (movieId) => {
     return mysql.query(
-        "SELECT CONCAT(person.firstName, ' ', person.lastName) as name, role.roleName " +
+        "SELECT CONCAT(person.firstName, ' ', person.lastName) as name, role.roleName, person.photoURL " +
         "FROM movieToPerson " +
         "INNER JOIN person " +
         "ON movieToPerson.personId = person.personId " +
@@ -173,11 +173,38 @@ module.exports.getMoviesWithNoPoster = async () => {
 }
 
 module.exports.getAttributesNames = async () => {
-    return await mysql.query(
+    return mysql.query(
         "SELECT COLUMN_NAME as collumns " +
         "FROM INFORMATION_SCHEMA.COLUMNS " +
         "WHERE TABLE_SCHEMA = Database() " +
         "AND TABLE_NAME = 'movies' ",
         []
+    ) 
+}
+
+module.exports.getPersonsWithoutAPhoto = async () => {
+    return mysql.query(
+        "SELECT * " +
+        "FROM person " +
+        "WHERE photoURL IS NULL ",
+        []
+    ) 
+}
+
+module.exports.updatePerson = async (person) => {
+    await mysql.query(
+        "UPDATE person " +
+        "SET person.firstName = ?, " +
+        "person.lastName = ?, " +
+        "person.description = ?, " +
+        "person.photoURL = ? " +
+        "WHERE person.personId = ? ",
+        [
+            person.firstName, 
+            person.lastName, 
+            person.description, 
+            person.photoURL, 
+            person.personId
+        ]
     ) 
 }

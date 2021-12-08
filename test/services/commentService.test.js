@@ -10,10 +10,18 @@ describe("Comment service testing", () => {
         sinon.restore() 
     }) 
 
-    it("getComments", async () => {
-        sinon.stub(commentModel, "getCommentsForMovie").returns("test worked") 
+    it("getCommentsFirstOrder", async () => {
+        sinon.stub(commentModel, "getFirstOrderCommentsForMovie").returns("test worked") 
 
-        const data = await commentService.getComments(123456, 1, 1)
+        const data = await commentService.getCommentsFirstOrder(123456, 1, 1)
+        
+        assertEquals(data, "test worked")
+    }) 
+
+    it("getCommentsSecondOrder", async () => {
+        sinon.stub(commentModel, "getSecondOrderCommentsForMovie").returns("test worked") 
+
+        const data = await commentService.getCommentsSecondOrder(123456, 1, 1, 1)
         
         assertEquals(data, "test worked")
     }) 

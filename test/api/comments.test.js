@@ -18,47 +18,92 @@ describe("Users api testing", () => {
         process.env.redis = "disabled"
     })
 
-    describe("get comments", () => {
-        it("get comments OK", async () => {
-            sinon.stub(commentService, "getComments").returns("Test worked")
+    describe("get comments first order", () => {
+        it("get comments first order OK", async () => {
+            sinon.stub(commentService, "getCommentsFirstOrder").returns("Test worked")
 
-            const response = await request.get("/comments/123456/10/2")
+            const response = await request.get("/comments/getFirstOrderComments/123456/10/2")
 
             assertEquals(response.text, "Test worked")
         })
 
-        it("get comments ERROR lower bound", async () => {
-            sinon.stub(commentService, "getComments").returns("Test worked")
+        it("get comments first order ERROR lower bound", async () => {
+            sinon.stub(commentService, "getCommentsFirstOrder").returns("Test worked")
 
-            const response = await request.get("/comments/0/0/-1")
+            const response = await request.get("/comments/getFirstOrderComments/0/0/-1")
 
             const data = JSON.parse(response.text)
 
             assertEquals(data.errors.length, 3)
         })
 
-        it("get comments OK lower bound", async () => {
-            sinon.stub(commentService, "getComments").returns("Test worked")
+        it("get comments first order OK lower bound", async () => {
+            sinon.stub(commentService, "getCommentsFirstOrder").returns("Test worked")
 
-            const response = await request.get("/comments/1/1/0")
+            const response = await request.get("/comments/getFirstOrderComments/1/1/0")
 
             assertEquals(response.text, "Test worked")
         })
 
-        it("get comments ERROR upper bound", async () => {
-            sinon.stub(commentService, "getComments").returns("Test worked")
+        it("get comments first order ERROR upper bound", async () => {
+            sinon.stub(commentService, "getCommentsFirstOrder").returns("Test worked")
 
-            const response = await request.get("/comments/10000000/1001/10000000")
+            const response = await request.get("/comments/getFirstOrderComments/10000000/1001/10000000")
 
             const data = JSON.parse(response.text)
 
             assertEquals(data.errors.length, 3)
         })
 
-        it("get comments OK upper bound", async () => {
-            sinon.stub(commentService, "getComments").returns("Test worked")
+        it("get comments first order OK upper bound", async () => {
+            sinon.stub(commentService, "getCommentsFirstOrder").returns("Test worked")
 
-            const response = await request.get("/comments/9999999/1000/9999999")
+            const response = await request.get("/comments/getFirstOrderComments/9999999/1000/9999999")
+
+            assertEquals(response.text, "Test worked")
+        })
+    })
+
+    describe("get comments second order", () => {
+        it("get comments second order OK", async () => {
+            sinon.stub(commentService, "getCommentsSecondOrder").returns("Test worked")
+
+            const response = await request.get("/comments/getSecondOrderComments/123456/251/10/2")
+
+            assertEquals(response.text, "Test worked")
+        })
+
+        it("get comments second order ERROR lower bound", async () => {
+            sinon.stub(commentService, "getCommentsSecondOrder").returns("Test worked")
+
+            const response = await request.get("/comments/getSecondOrderComments/0/0/0/-1")
+
+            const data = JSON.parse(response.text)
+
+            assertEquals(data.errors.length, 4)
+        })
+
+        it("get comments second order OK lower bound", async () => {
+            sinon.stub(commentService, "getCommentsSecondOrder").returns("Test worked")
+
+            const response = await request.get("/comments/getSecondOrderComments/1/1/1/0")
+
+            assertEquals(response.text, "Test worked")
+        })
+
+        it("get comments second order ERROR upper bound", async () => {
+            sinon.stub(commentService, "getCommentsSecondOrder").returns("Test worked")
+
+            const response = await request.get("/comments/getSecondOrderComments/10000000/10000000000/1001/10000000")
+
+            const data = JSON.parse(response.text)
+
+            assertEquals(data.errors.length, 4)
+        })
+
+        it("get comments second order OK upper bound", async () => {
+            sinon.stub(commentService, "getCommentsSecondOrder").returns("Test worked")
+            const response = await request.get("/comments/getSecondOrderComments/9999999/9999999999/1000/9999999")
 
             assertEquals(response.text, "Test worked")
         })

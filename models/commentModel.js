@@ -1,11 +1,22 @@
 const mysql = require('./connections/mySQLConnection') 
 
-module.exports.getCommentsForMovie = async (movieId, number, offset) => {
+module.exports.getFirstOrderCommentsForMovie = async (movieId, number, offset) => {
     return mysql.query(
-        "SELECT * FROM movieComment " +
-        "WHERE movieComment.movieId = ?" +
-        "LMIT ?,?",
+        "SELECT *, IF((SELECT COUNT(*) FROM movieComment as sc WHERE replyCommentId = fc.commentId), true, false) as hasReplies " + 
+        "FROM movieComment as fc " +
+        "WHERE fc.movieId = ? " +
+        "LIMIT ?,? ",
         [movieId, offset, number]
+    ) 
+}
+
+module.exports.getSecondOrderCommentsForMovie = async (movieId, replyCommentId, number, offset) => {
+    return mysql.query(
+        "SELECT * " + 
+        "FROM movieComment " +
+        "WHERE movieId = ? AND replyCommentId = ? " +
+        "LIMIT ?,? ",
+        [movieId, replyCommentId, offset, number]
     ) 
 }
 
