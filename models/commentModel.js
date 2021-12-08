@@ -4,8 +4,8 @@ module.exports.getFirstOrderCommentsForMovie = async (movieId, number, offset) =
     return mysql.query(
         "SELECT *, IF((SELECT COUNT(*) FROM movieComment as sc WHERE replyCommentId = fc.commentId), true, false) as hasReplies " + 
         "FROM movieComment as fc " +
-        "WHERE fc.movieId = ?" +
-        "LMIT ?,?",
+        "WHERE fc.movieId = ? " +
+        "LIMIT ?,? ",
         [movieId, offset, number]
     ) 
 }
@@ -13,9 +13,9 @@ module.exports.getFirstOrderCommentsForMovie = async (movieId, number, offset) =
 module.exports.getSecondOrderCommentsForMovie = async (movieId, replyCommentId, number, offset) => {
     return mysql.query(
         "SELECT * " + 
-        "FROM movieComment" +
-        "WHERE movieId = ? AND replyCommentId = ?" +
-        "LMIT ?,?",
+        "FROM movieComment " +
+        "WHERE movieId = ? AND replyCommentId = ? " +
+        "LIMIT ?,? ",
         [movieId, replyCommentId, offset, number]
     ) 
 }

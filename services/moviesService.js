@@ -70,7 +70,7 @@ module.exports.getMovies = async (sorting, number, offset, category, descending,
 module.exports.getPhotosForPersons = async (movie) => {
     
     for(let i = 0; i < movie.directors.length; i++){
-        let personData = await personModel.searchActorByName(movie.directors[i].name)
+        let personData = await personModel.searchPersonByName(movie.directors[i].name)
         const body = await personData.text()
         const object = JSON.parse(body)
         if(object.results.length > 0 && object.results[0].hasOwnProperty("profile_path") && object.results[0].profile_path != null){
@@ -81,7 +81,7 @@ module.exports.getPhotosForPersons = async (movie) => {
     }
 
     for(let i = 0; i < movie.actors.length; i++){
-        let personData = await personModel.searchActorByName(movie.actors[i].name)
+        let personData = await personModel.searchPersonByName(movie.actors[i].name)
         const body = await personData.text()
         const object = JSON.parse(body)
         if(object.results.length > 0 && object.results[0].hasOwnProperty("profile_path") && object.results[0].profile_path != null){
@@ -202,9 +202,7 @@ module.exports.updateDatabaseMovie = async (movie) => {
         }
     }
 
-    //Update the movie object.
     moviesModel.updateMovie(movie)
-    console.log("Updated object")
 }
 
 module.exports.getMovieDetailsAndFavorites = async (movieId, checkFavorites, userId) => {
@@ -275,6 +273,10 @@ module.exports.getMovieDetails = async (movieId) => {
     }
 }
 
+module.exports.getSortingMethods = () => {
+    return sortingOptionsDTO;
+}
+
 module.exports.update = async () => {
     // let movies = await moviesModel.getMoviesWithNoPoster()
     // let numberPosters = 0
@@ -295,7 +297,7 @@ module.exports.update = async () => {
     let numberPhotos = 0
 
     for(let i = 0;  i < persons.length;  i++){
-        let personData = await personModel.searchActorByName(persons[i].firstName + " " + persons[i].lastName)
+        let personData = await personModel.searchPersonByName(persons[i].firstName + " " + persons[i].lastName)
         const body = await personData.text()
         const object = JSON.parse(body)
         if(object.results.length > 0 && object.results[0].hasOwnProperty("profile_path") && object.results[0].profile_path != null){
@@ -313,6 +315,3 @@ module.exports.update = async () => {
 }
 
 
-module.exports.getSortingMethods = () => {
-    return sortingOptionsDTO;
-}

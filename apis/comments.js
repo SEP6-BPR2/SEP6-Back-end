@@ -11,7 +11,7 @@ const validateJWT = require('../middleware/jwtValidationMiddleware')
  * @param number - int, how many comments to return
  * @param offset - int, how many comments to skip by
  *
- * @example - GET {BaseURL}/getFirstOrderComments/123456/1/0
+ * @example - GET {BaseURL}/comments/getFirstOrderComments/123456/1/0
  */
 router.get("/getFirstOrderComments/:movieId/:number/:offset", 
     param("movieId").isInt({min:1 ,max:9999999}), 
@@ -34,7 +34,7 @@ async (req, res) => {
  * @param number - int, how many comments to return
  * @param offset - int, how many comments to skip by
  * 
- * @example - GET {BaseURL}/getSecondOrderComments/123456/1/0
+ * @example - GET {BaseURL}/comments/getSecondOrderComments/123456/1/0
  */
 router.get("/getSecondOrderComments/:movieId/:commentId/:number/:offset", 
     param("movieId").isInt({min:1 ,max:9999999}), 

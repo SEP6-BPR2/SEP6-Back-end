@@ -3,6 +3,8 @@ process.env.GCPDBUSER = "testing" // Initialize testing env
 const moviesModel = require('../../models/moviesModel') 
 const moviesService = require('../../services/moviesService') 
 const favoritesService = require('../../services/favoritesService') 
+const personModel = require('../../models/personModel') 
+
 const sinon = require('sinon')
 
 describe("Movie service testing", () => {
@@ -33,7 +35,6 @@ describe("Movie service testing", () => {
 
         it("getMovies OK missing posterURL", async () => {
             sinon.stub(moviesModel, "getAllMoviesWithSorting").returns([{posterURL: null, description: "description"}]) 
-            sinon.stub(moviesService, "getPhotosForPersons").returns({posterURL: null, description: "description", photoURL: "URL"}) 
             sinon.stub(moviesService, "getMoreDataForMovieFromThirdParty").returns({posterURL: "newPoster", description: "description"}) 
             sinon.stub(moviesService, "updateDatabaseMovie")
             
@@ -45,7 +46,6 @@ describe("Movie service testing", () => {
 
         it("getMovies OK missing description", async () => {
             sinon.stub(moviesModel, "getAllMoviesWithSorting").returns([{posterURL: "poster", description: null}]) 
-            sinon.stub(moviesService, "getPhotosForPersons").returns({posterURL: "poster", description: null, photoURL: "URL"}) 
             sinon.stub(moviesService, "getMoreDataForMovieFromThirdParty").returns({posterURL: "poster", description: "newDescription"}) 
             sinon.stub(moviesService, "updateDatabaseMovie")
             
@@ -57,7 +57,6 @@ describe("Movie service testing", () => {
 
         it("getMovies OK missing poster, no poster from third party, OK fallback", async () => {
             sinon.stub(moviesModel, "getAllMoviesWithSorting").returns([{posterURL: null, description: "description"}]) 
-            sinon.stub(moviesService, "getPhotosForPersons").returns({posterURL: null, description: "description", photoURL: "URL"}) 
             sinon.stub(moviesService, "getMoreDataForMovieFromThirdParty").returns({posterURL: "N/A", description: "description"}) 
             sinon.stub(moviesService, "getPosterFromFallbackThirdParty").returns("newPoster")
             sinon.stub(moviesService, "updateDatabaseMovie")
@@ -70,7 +69,6 @@ describe("Movie service testing", () => {
 
         it("getMovies OK missing poster, no poster from third party, null fallback", async () => {
             sinon.stub(moviesModel, "getAllMoviesWithSorting").returns([{posterURL: null, description: "description"}]) 
-            sinon.stub(moviesService, "getPhotosForPersons").returns({posterURL: null, description: "description", photoURL: "URL"}) 
             sinon.stub(moviesService, "getMoreDataForMovieFromThirdParty").returns({posterURL: "N/A", description: "description"}) 
             sinon.stub(moviesService, "getPosterFromFallbackThirdParty").returns(null)
             sinon.stub(moviesService, "updateDatabaseMovie")
@@ -94,9 +92,9 @@ describe("Movie service testing", () => {
                             Genre: "genre, genre1",
                             Director: "director, director1",
                             Actors: "actor, actor1",
-                            rating: "rating",
-                            votes: "votes",
-                            Runtime: "runtime",
+                            rating: "6.0",
+                            votes: "45000",
+                            Runtime: "8 min",
                         }
                     )
                 }}
@@ -109,9 +107,40 @@ describe("Movie service testing", () => {
             assertEquals(data.genres[0], "genre")
             assertEquals(data.directors[0].name, "director")
             assertEquals(data.actors[0].name, "actor")
-            assertEquals(data.rating, "rating")
-            assertEquals(data.votes, "votes")
-            assertEquals(data.runtime, "runtime")
+            assertEquals(data.rating, 6.0)
+            assertEquals(data.votes, 45000)
+            assertEquals(data.runtime, "8 min")
+        })
+
+        it("getMoreDataForMovieFromThirdParty OK", async () => {
+            sinon.stub(moviesService, "convertIdForAPI").returns("movieId") 
+            sinon.stub(moviesModel, "getMovieByIDThirdParty").returns(
+                {text: () => { 
+                    return JSON.stringify(
+                        {
+                            Plot: "plot",
+                            Poster: "poster",
+                            Genre: "genre, genre1",
+                            Director: "director, director1",
+                            Actors: "actor, actor1",
+                            rating: "dfs",
+                            votes: "dsfs",
+                            Runtime: "N/A",
+                        }
+                    )
+                }}
+            ) 
+
+            const data = await moviesService.getMoreDataForMovieFromThirdParty(123) 
+            
+            assertEquals(data.description, "plot")
+            assertEquals(data.posterURL, "poster")
+            assertEquals(data.genres[0], "genre")
+            assertEquals(data.directors[0].name, "director")
+            assertEquals(data.actors[0].name, "actor")
+            assertEquals(data.rating, 0.0)
+            assertEquals(data.votes, 0)
+            assertEquals(data.runtime, "0 min")
         })
     })
     
@@ -169,6 +198,7 @@ describe("Movie service testing", () => {
     describe("updateDatabaseMovie", () => {
         it("updateDatabaseMovie OK insert, relate -genre, actor, director non-existent", async () => {
             sinon.stub(moviesModel, "getGenreByName").returns([]) 
+
             sinon.stub(moviesModel, "insertGenre").returns({insertId: "genreId"}) 
             sinon.stub(moviesModel, "insertMovieToGenre")
             sinon.stub(moviesModel, "getPersonByName").returns([]) 
@@ -176,14 +206,17 @@ describe("Movie service testing", () => {
             sinon.stub(moviesModel, "insertMovieToPerson")
             sinon.stub(moviesModel, "updateMovie").returns("movieId") 
 
+            sinon.stub(moviesService, "getPhotosForPersons").returns({
+                genres: ["genre"],
+                actors: [{name:"actor lastName", photoURL: "photo"}],
+                directors: [{name:"director lastName", photoURL: "photo"}]
+            }) 
 
-            await moviesService.updateDatabaseMovie(
-                {
-                    genres: ["genre"],
-                    actors: [{name:"actor lastName"}],
-                    directors: [{name:"director lastName"}]
-                }
-            ) 
+            await moviesService.updateDatabaseMovie({
+                genres: ["genre"],
+                actors: [{name:"actor lastName", photoURL: null}],
+                directors: [{name:"director lastName", photoURL: null}]
+            }) 
 
             //Check function calls
         })
@@ -197,6 +230,11 @@ describe("Movie service testing", () => {
 
             sinon.stub(moviesModel, "updateMovie").returns("movieId") 
 
+            sinon.stub(moviesService, "getPhotosForPersons").returns({
+                genres: ["genre"],
+                actors: [{name:"actor", photoURL: "photo"}],
+                directors: [{name:"director", photoURL: "photo"}]
+            }) 
 
             await moviesService.updateDatabaseMovie(
                 {
@@ -205,8 +243,6 @@ describe("Movie service testing", () => {
                     directors: [{name:"director"}]
                 }
             ) 
-
-            //Check function calls
         })
     })
 
@@ -290,11 +326,67 @@ describe("Movie service testing", () => {
 
     describe("getSortingMethods", () => {
         it("getSortingMethods OK", async () => {
-            // sinon.stub(moviesModel, "getAttributesNames").returns("Test works") 
-
             const data = await moviesService.getSortingMethods() 
             
             assertEquals(JSON.stringify(data), JSON.stringify({sortingOptions: ['year', 'title', 'rating', 'votes', 'runtime']}))
+        })
+    })
+
+    describe("getPhotosForPersons", () => {
+        it("getPhotosForPersons OK", async () => {
+            sinon.stub(personModel, "searchPersonByName").returns(
+                {text: () => { 
+                    return JSON.stringify(
+                        {
+                            results: [
+                                {profile_path: "Test"}
+                            ]
+                        }
+                    )
+                }}
+            ) 
+
+            let passed = {
+                directors:[
+                    {name: "Director director", photoURL: null}
+                ],
+                actors:[
+                    {name: "Actor actor", photoURL: null}
+                ]
+            }
+
+            const data = await moviesService.getPhotosForPersons(passed) 
+            
+            assertEquals(data.directors[0].photoURL, "https://image.tmdb.org/t/p/w500" + "Test")
+            assertEquals(data.actors[0].photoURL, "https://image.tmdb.org/t/p/w500" + "Test")
+        })
+
+        it("getPhotosForPersons OK N/A", async () => {
+            sinon.stub(personModel, "searchPersonByName").returns(
+                {text: () => { 
+                    return JSON.stringify(
+                        {
+                            results: [
+                                // {profile_path: "Test"}
+                            ]
+                        }
+                    )
+                }}
+            ) 
+
+            let passed = {
+                directors:[
+                    {name: "Director director", photoURL: null}
+                ],
+                actors:[
+                    {name: "Actor actor", photoURL: null}
+                ]
+            }
+
+            const data = await moviesService.getPhotosForPersons(passed) 
+            
+            assertEquals(data.directors[0].photoURL, "N/A")
+            assertEquals(data.actors[0].photoURL, "N/A")
         })
     })
 })
