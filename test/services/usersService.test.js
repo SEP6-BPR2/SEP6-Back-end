@@ -17,7 +17,7 @@ describe("User service testing", () => {
             sinon.stub(usersModel, "insertUser")
             sinon.stub(usersModel, "insertFavoriteList")
 
-            const data = await usersService.registerUser("UserId", "nickname") 
+            const data = await usersService.registerUser("UserId", "nickname", "URL") 
             
             assertEquals(data.user, "exists")
         })
@@ -29,7 +29,7 @@ describe("User service testing", () => {
             sinon.stub(usersModel, "insertUser")
             sinon.stub(usersModel, "insertFavoriteList")
 
-            const data = await usersService.registerUser("UserId", "nickname") 
+            const data = await usersService.registerUser("UserId", "nickname", "URL") 
             
             assertEquals(data.user, "exists")
         })
