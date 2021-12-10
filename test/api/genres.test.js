@@ -10,7 +10,7 @@ const sinon = require('sinon')
 //Imports in file being tested
 const genresService = require('../../services/genresService') 
 
-describe("Users api testing", () => {
+describe("Genres api testing", () => {
 
     afterEach(function () {
         sinon.restore() 

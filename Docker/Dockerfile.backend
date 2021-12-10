@@ -1,8 +1,8 @@
 FROM node:16.13.0-alpine3.14
 
-
 WORKDIR /app
 
+# Intended to be run from the directory where index.js is
 COPY package.json /app/
 COPY package-lock.json /app/
 
@@ -16,12 +16,5 @@ RUN npm ci --production
 RUN npm cache clean --force
 
 EXPOSE 9000
-
-# RUN wget http://download.redis.io/redis-stable.tar.gz
-# RUN tar xvzf redis-stable.tar.gz
-# RUN cd redis-stable
-# RUN apt-get install -y redis-server
-# RUN redis-server
-# RUN cd ..
 
 CMD ["npm", "start"]
