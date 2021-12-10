@@ -3,7 +3,7 @@ const router = express.Router()
 const { redisSet } = require("../middleware/redisMiddleware")
 const moviesService = require('../services/moviesService') 
 const { param } = require('express-validator') 
-const { validate } = require("../middleware/validateMiddleware")
+const { validate, checkUserIdOrNull } = require("../middleware/validateMiddleware")
 
 /**
  * Get list of movies
@@ -115,18 +115,6 @@ router.get("/update", async (req, res) => {
     res.sendStatus(200)
 }) 
 
-function checkUserIdOrNull(value, checkUserId){
-    if(checkUserId == 1 ){
-        if(value.length >= 28 && value.length <= 35 ){
-            return true
-        }else{
-            throw new Error('Value is out of bounds');
-        }
-    }else if(checkUserId == 0 && value == "none"){
-        return true
-    }else{
-        throw new Error('User id must be "none" if disabled');
-    }
-}
+
 
 module.exports = router 

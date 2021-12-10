@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router() 
 const commentService = require("../services/commentService")
 const { param, body } = require('express-validator')
-const { validate } = require("../middleware/validateMiddleware")
+const { validate, validateNullOrInt } = require("../middleware/validateMiddleware")
 const validateJWT = require('../middleware/jwtValidationMiddleware')
 
 /**
@@ -80,18 +80,5 @@ async (req, res) => {
 
     res.sendStatus(200)
 }) 
-
-
-function validateNullOrInt(value){
-    if (value == null || !isNaN(parseInt(value))) {
-        if(value == null || value >= 1 && value <= 9999999){
-            return true;
-        }else{
-            throw new Error('Value is not valid');
-        }
-    }else{
-        throw new Error('Value is not null or int');
-    }
-}
 
 module.exports = router 

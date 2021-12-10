@@ -1,7 +1,7 @@
 const express = require('express') 
 const router = express.Router() 
 const usersService = require('../services/usersService') 
-const { param } = require('express-validator') 
+const { param, body } = require('express-validator') 
 const { validate } = require("../middleware/validateMiddleware")
 const validateJWT = require('../middleware/jwtValidationMiddleware')
 
@@ -15,13 +15,15 @@ const validateJWT = require('../middleware/jwtValidationMiddleware')
 router.post("/register/:userId/:nickname", 
     param("userId").isLength({min: 28, max: 35}), 
     param("nickname").isLength({min: 5, max: 50}),
+    body("photoURL").isLength({min: 38, max: 150}),
     validate, 
     validateJWT,
 async (req, res) => {
     const data = await usersService.registerUser(
         req.params.userId, 
-        req.params.nickname
-    ) 
+        req.params.nickname,
+        req.body.photoURL
+    )
     res.send(data)
 }) 
 

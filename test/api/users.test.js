@@ -22,7 +22,9 @@ describe("Users api testing", () => {
         it("register user OK", async () => {
             sinon.stub(usersService, "registerUser").returns("Test worked")
 
-            const response = await request.post("/users/register/0000000000000000000000000000/1111111")
+            const response = await request.post("/users/register/0000000000000000000000000000/1111111").send({
+                photoURL: "https://lh3.googleusercontent.com/a-/AOh14Gi9umQuQieWJM3AGbW_f8f6cFEPAl22k6ylzXaDaQ=s96-c"
+            })
 
             assertEquals(response.text, "Test worked")
         })
@@ -30,7 +32,9 @@ describe("Users api testing", () => {
         it("register user OK lower bound", async () => {
             sinon.stub(usersService, "registerUser").returns("Test worked")
 
-            const response = await request.post("/users/register/0000000000000000000000000000/11111")
+            const response = await request.post("/users/register/0000000000000000000000000000/11111").send({
+                photoURL: "https://lh3.googleusercontent.com/a-/a"
+            })
 
             assertEquals(response.text, "Test worked")
         })
@@ -38,17 +42,21 @@ describe("Users api testing", () => {
         it("register user ERROR lower bound", async () => {
             sinon.stub(usersService, "registerUser").returns("Test worked")
 
-            const response = await request.post("/users/register/000000000000000000000000000/1111")
+            const response = await request.post("/users/register/000000000000000000000000000/1111").send({
+                photoURL: "https://lh3.googleusercontent.com/a-/"
+            })
 
             const data = JSON.parse(response.text)
 
-            assertEquals(data.errors.length, 2)
+            assertEquals(data.errors.length, 3)
         })
 
         it("register user OK upper bound", async () => {
             sinon.stub(usersService, "registerUser").returns("Test worked")
 
-            const response = await request.post("/users/register/00000000000000000000000000000000000/00000000000000000000000000000000000000000000000000")
+            const response = await request.post("/users/register/00000000000000000000000000000000000/00000000000000000000000000000000000000000000000000").send({
+                photoURL: "https://lh3.googleusercontent.com/a-/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            })
 
             assertEquals(response.text, "Test worked")
         })
@@ -56,11 +64,13 @@ describe("Users api testing", () => {
         it("register user ERROR upper bound", async () => {
             sinon.stub(usersService, "registerUser").returns("Test worked")
 
-            const response = await request.post("/users/register/000000000000000000000000000000000000/000000000000000000000000000000000000000000000000000")
+            const response = await request.post("/users/register/000000000000000000000000000000000000/000000000000000000000000000000000000000000000000000").send({
+                photoURL: "https://lh3.googleusercontent.com/a-/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            })
             
             const data = JSON.parse(response.text)
 
-            assertEquals(data.errors.length, 2)
+            assertEquals(data.errors.length, 3)
         })
     })
 

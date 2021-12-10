@@ -2,8 +2,9 @@ const mysql = require('./connections/mySQLConnection')
 
 module.exports.getFirstOrderCommentsForMovie = async (movieId, number, offset) => {
     return mysql.query(
-        "SELECT *, IF((SELECT COUNT(*) FROM movieComment as sc WHERE replyCommentId = fc.commentId), true, false) as hasReplies " + 
+        "SELECT *, appUser.nickname, appUser.photoURL, IF((SELECT COUNT(*) FROM movieComment as sc WHERE replyCommentId = fc.commentId), true, false) as hasReplies " + 
         "FROM movieComment as fc " +
+        "INNER JOIN appUser ON fc.userId = appUser.userId " +
         "WHERE fc.movieId = ? " +
         "LIMIT ?,? ",
         [movieId, offset, number]
@@ -12,8 +13,9 @@ module.exports.getFirstOrderCommentsForMovie = async (movieId, number, offset) =
 
 module.exports.getSecondOrderCommentsForMovie = async (movieId, replyCommentId, number, offset) => {
     return mysql.query(
-        "SELECT * " + 
+        "SELECT *, appUser.nickname, appUser.photoURL " + 
         "FROM movieComment " +
+        "INNER JOIN appUser ON fc.userId = appUser.userId " +
         "WHERE movieId = ? AND replyCommentId = ? " +
         "LIMIT ?,? ",
         [movieId, replyCommentId, offset, number]

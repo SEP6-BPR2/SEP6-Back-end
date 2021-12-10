@@ -49,6 +49,7 @@ CREATE TABLE movieToGenre (
 CREATE TABLE appUser (
 	userId 			TEXT NOT NULL,
 	nickname 		TEXT NOT NULL,
+	photoURL 		TEXT
 ) 
 
 CREATE TABLE favoritesList (

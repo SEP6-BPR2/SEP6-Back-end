@@ -1,18 +1,19 @@
 const mysql = require('./connections/mySQLConnection') 
 
-module.exports.insertUser = async (id, nickname) => {
+module.exports.insertUser = async (id, nickname, photoURL) => {
     return mysql.query(
-        "INSERT INTO appUser (userId, nickname) VALUES (?, ?) ",
-        [id, nickname]
+        "INSERT INTO appUser (userId, nickname, photoURL) VALUES (?, ?, ?) ",
+        [id, nickname, photoURL]
     ) 
 }
 
-module.exports.updateUser = async (id, nickname) => {
+module.exports.updateUser = async (id, nickname, photoURL) => {
     return mysql.query(
         "UPDATE appUser " +
         "SET appUser.nickname = ? " +
-        "WHERE appUser.userId = ?  ",
-        [nickname, id]
+        "WHERE appUser.userId = ? " +
+        "appUser.photoURL = ?",
+        [nickname, id, photoURL]
     ) 
 }
 
