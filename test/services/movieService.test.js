@@ -198,7 +198,6 @@ describe("Movie service testing", () => {
     describe("updateDatabaseMovie", () => {
         it("updateDatabaseMovie OK insert, relate -genre, actor, director non-existent", async () => {
             sinon.stub(moviesModel, "getGenreByName").returns([]) 
-
             sinon.stub(moviesModel, "insertGenre").returns({insertId: "genreId"}) 
             sinon.stub(moviesModel, "insertMovieToGenre")
             sinon.stub(moviesModel, "getPersonByName").returns([]) 
@@ -224,6 +223,30 @@ describe("Movie service testing", () => {
         it("updateDatabaseMovie OK insert, relate -genre, actor, director exists", async () => {
             sinon.stub(moviesModel, "getGenreByName").returns([{genreId: "movieId"}]) 
             sinon.stub(moviesModel, "insertMovieToGenre")
+            sinon.stub(moviesModel, "getPersonByName").returns([{personId: "personId"}]) 
+            sinon.stub(moviesModel, "insertMovieToPerson")
+            sinon.stub(moviesModel, "updateMovie").returns("movieId") 
+            sinon.stub(moviesService, "getPhotosForPersons").returns({
+                genres: ["genre"],
+                actors: [{name:"actor", photoURL: "photo"}],
+                directors: [{name:"director", photoURL: "photo"}]
+            }) 
+            
+            sinon.stub(moviesModel, "getMovieToGenre").returns([]) 
+            sinon.stub(moviesModel, "getMovieToPerson").returns([]) 
+
+            await moviesService.updateDatabaseMovie(
+                {
+                    genres: ["genre"],
+                    actors: [{name: "actor"}],
+                    directors: [{name:"director"}]
+                }
+            ) 
+        })
+
+        it("updateDatabaseMovie OK insert, relate -genre, actor, director exists", async () => {
+            sinon.stub(moviesModel, "getGenreByName").returns([{genreId: "movieId"}]) 
+            sinon.stub(moviesModel, "insertMovieToGenre")
 
             sinon.stub(moviesModel, "getPersonByName").returns([{personId: "personId"}]) 
             sinon.stub(moviesModel, "insertMovieToPerson")
@@ -235,6 +258,8 @@ describe("Movie service testing", () => {
                 actors: [{name:"actor", photoURL: "photo"}],
                 directors: [{name:"director", photoURL: "photo"}]
             }) 
+            sinon.stub(moviesModel, "getMovieToGenre").returns(["genreLink"]) 
+            sinon.stub(moviesModel, "getMovieToPerson").returns(["personLink"]) 
 
             await moviesService.updateDatabaseMovie(
                 {
