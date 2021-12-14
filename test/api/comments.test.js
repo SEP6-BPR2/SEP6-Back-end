@@ -8,9 +8,9 @@ const request = supertest(app)
 const sinon = require('sinon')
 
 //Imports in file being tested
-const commentService = require('../../services/commentService') 
+const commentsService = require('../../services/commentsService') 
 
-describe("Users api testing", () => {
+describe("Comments api testing", () => {
 
     afterEach(function () {
         sinon.restore() 
@@ -20,7 +20,7 @@ describe("Users api testing", () => {
 
     describe("get comments first order", () => {
         it("get comments first order OK", async () => {
-            sinon.stub(commentService, "getCommentsFirstOrder").returns("Test worked")
+            sinon.stub(commentsService, "getCommentsFirstOrder").returns("Test worked")
 
             const response = await request.get("/comments/getFirstOrderComments/123456/10/2")
 
@@ -28,7 +28,7 @@ describe("Users api testing", () => {
         })
 
         it("get comments first order ERROR lower bound", async () => {
-            sinon.stub(commentService, "getCommentsFirstOrder").returns("Test worked")
+            sinon.stub(commentsService, "getCommentsFirstOrder").returns("Test worked")
 
             const response = await request.get("/comments/getFirstOrderComments/0/0/-1")
 
@@ -38,7 +38,7 @@ describe("Users api testing", () => {
         })
 
         it("get comments first order OK lower bound", async () => {
-            sinon.stub(commentService, "getCommentsFirstOrder").returns("Test worked")
+            sinon.stub(commentsService, "getCommentsFirstOrder").returns("Test worked")
 
             const response = await request.get("/comments/getFirstOrderComments/1/1/0")
 
@@ -46,7 +46,7 @@ describe("Users api testing", () => {
         })
 
         it("get comments first order ERROR upper bound", async () => {
-            sinon.stub(commentService, "getCommentsFirstOrder").returns("Test worked")
+            sinon.stub(commentsService, "getCommentsFirstOrder").returns("Test worked")
 
             const response = await request.get("/comments/getFirstOrderComments/10000000/1001/10000000")
 
@@ -56,7 +56,7 @@ describe("Users api testing", () => {
         })
 
         it("get comments first order OK upper bound", async () => {
-            sinon.stub(commentService, "getCommentsFirstOrder").returns("Test worked")
+            sinon.stub(commentsService, "getCommentsFirstOrder").returns("Test worked")
 
             const response = await request.get("/comments/getFirstOrderComments/9999999/1000/9999999")
 
@@ -66,7 +66,7 @@ describe("Users api testing", () => {
 
     describe("get comments second order", () => {
         it("get comments second order OK", async () => {
-            sinon.stub(commentService, "getCommentsSecondOrder").returns("Test worked")
+            sinon.stub(commentsService, "getCommentsSecondOrder").returns("Test worked")
 
             const response = await request.get("/comments/getSecondOrderComments/123456/251/10/2")
 
@@ -74,7 +74,7 @@ describe("Users api testing", () => {
         })
 
         it("get comments second order ERROR lower bound", async () => {
-            sinon.stub(commentService, "getCommentsSecondOrder").returns("Test worked")
+            sinon.stub(commentsService, "getCommentsSecondOrder").returns("Test worked")
 
             const response = await request.get("/comments/getSecondOrderComments/0/0/0/-1")
 
@@ -84,7 +84,7 @@ describe("Users api testing", () => {
         })
 
         it("get comments second order OK lower bound", async () => {
-            sinon.stub(commentService, "getCommentsSecondOrder").returns("Test worked")
+            sinon.stub(commentsService, "getCommentsSecondOrder").returns("Test worked")
 
             const response = await request.get("/comments/getSecondOrderComments/1/1/1/0")
 
@@ -92,7 +92,7 @@ describe("Users api testing", () => {
         })
 
         it("get comments second order ERROR upper bound", async () => {
-            sinon.stub(commentService, "getCommentsSecondOrder").returns("Test worked")
+            sinon.stub(commentsService, "getCommentsSecondOrder").returns("Test worked")
 
             const response = await request.get("/comments/getSecondOrderComments/10000000/10000000000/1001/10000000")
 
@@ -102,7 +102,7 @@ describe("Users api testing", () => {
         })
 
         it("get comments second order OK upper bound", async () => {
-            sinon.stub(commentService, "getCommentsSecondOrder").returns("Test worked")
+            sinon.stub(commentsService, "getCommentsSecondOrder").returns("Test worked")
             const response = await request.get("/comments/getSecondOrderComments/9999999/9999999999/1000/9999999")
 
             assertEquals(response.text, "Test worked")
@@ -111,7 +111,7 @@ describe("Users api testing", () => {
 
     describe("post comments", () => {
         it("post comments OK", async () => {
-            sinon.stub(commentService, "postComment").returns("Test worked")
+            sinon.stub(commentsService, "postComment").returns("Test worked")
 
             const response = await request.post("/comments/0000000000000000000000000000/123456")
             .send(
@@ -125,7 +125,7 @@ describe("Users api testing", () => {
         })
 
         it("post comments OK null reply", async () => {
-            sinon.stub(commentService, "postComment").returns("Test worked")
+            sinon.stub(commentsService, "postComment").returns("Test worked")
 
             const response = await request.post("/comments/0000000000000000000000000000/123456")
             .send(
@@ -139,7 +139,7 @@ describe("Users api testing", () => {
         })
 
         it("post comments OK lower bound", async () => {
-            sinon.stub(commentService, "postComment").returns("Test worked")
+            sinon.stub(commentsService, "postComment").returns("Test worked")
 
             const response = await request.post("/comments/0000000000000000000000000000/1")
             .send(
@@ -153,7 +153,7 @@ describe("Users api testing", () => {
         })
 
         it("post comments OK upper bound", async () => {
-            sinon.stub(commentService, "postComment").returns("Test worked")
+            sinon.stub(commentsService, "postComment").returns("Test worked")
 
             const response = await request.post("/comments/00000000000000000000000000000000000/9999999")
             .send(

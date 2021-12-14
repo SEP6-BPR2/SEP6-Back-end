@@ -16,4 +16,9 @@ router.get("/all", async (req, res) => {
     res.send(data)
 }) 
 
+router.get("/duplicates", async (req, res) => {
+    await genresService.deleteDuplicates() 
+    res.sendStatus(200)
+}) 
+
 module.exports = router 

@@ -2,8 +2,6 @@ CREATE TABLE movies (
 	id				INTEGER NOT NULL,
 	title			TEXT NOT NULL,
 	year			NUMERIC NOT NULL,
-	month			NUMERIC,
-	day   			NUMERIC
 	description		TEXT,
 	runtime 		TEXT,
 	posterURL 		TEXT,
@@ -11,8 +9,6 @@ CREATE TABLE movies (
 	votes			INTEGER,
 	lastUpdated		DATETIME 
 ) 
-
-update movies set posterURL = NULL where posterURL is not NULL
 
 CREATE TABLE movieToPerson (
 	movieId 		INTEGER NOT NULL,
@@ -56,11 +52,6 @@ CREATE TABLE favoritesList (
 	favoritesId 	INTEGER AUTO_INCREMENT NOT NULL,
 	userId 			TEXT NOT NULL,
     PRIMARY KEY(favoritesId)
-) 
-
-CREATE TABLE favoritesListToMovie (
-	favoritesId 	INTEGER NOT NULL,
-	movieId 		INTEGER NOT NULL
 ) 
 
 CREATE TABLE favoritesListToMovie (

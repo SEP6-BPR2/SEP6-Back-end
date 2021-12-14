@@ -195,16 +195,6 @@ describe("Movies api testing", () => {
             assertEquals(response.text, "Test worked")
         })
     })
-
-    describe("update posters", () => {
-        it("update poster OK", async () => {
-            sinon.stub(moviesService, "update").returns(200)
-
-            const response = await request.get("/movies/update")
-
-            assertEquals(response.status, 200)
-        })
-    })
 })
 
 
