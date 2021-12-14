@@ -73,7 +73,10 @@ module.exports.getPhotosForPersons = async (movie) => {
         let personData = await personModel.searchPersonByName(movie.directors[i].name)
         const body = await personData.text()
         const object = JSON.parse(body)
-        if(object.results.length > 0 && object.results[0].hasOwnProperty("profile_path") && object.results[0].profile_path != null){
+
+        // console.log(JSON.stringify(object) + "\n\n")
+
+        if(object.results != null && object.results.length > 0 && object.results[0].hasOwnProperty("profile_path") && object.results[0].profile_path != null){
             movie.directors[i].photoURL = "https://image.tmdb.org/t/p/w500" + object.results[0].profile_path
         }else{
             movie.directors[i].photoURL = "N/A"
@@ -84,7 +87,10 @@ module.exports.getPhotosForPersons = async (movie) => {
         let personData = await personModel.searchPersonByName(movie.actors[i].name)
         const body = await personData.text()
         const object = JSON.parse(body)
-        if(object.results.length > 0 && object.results[0].hasOwnProperty("profile_path") && object.results[0].profile_path != null){
+
+        // console.log(JSON.stringify(object) + "\n\n")
+
+        if(object.results != null && object.results.length > 0 && object.results[0].hasOwnProperty("profile_path") && object.results[0].profile_path != null){
             movie.actors[i].photoURL = "https://image.tmdb.org/t/p/w500" + object.results[0].profile_path
         }else{
             movie.actors[i].photoURL = "N/A"
