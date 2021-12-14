@@ -23,10 +23,10 @@ async (req, res) => {
         parseInt(req.params.movieId),
         parseInt(req.params.number),
         parseInt(req.params.offset)
-    ) 
+    )
 
     res.send(data)
-}) 
+})
 
 /**
  * Get comments that are replying to a comment that are in movie description
