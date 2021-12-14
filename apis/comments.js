@@ -1,6 +1,6 @@
 const express = require('express') 
 const router = express.Router() 
-const commentService = require("../services/commentService")
+const commentsService = require("../services/commentsService")
 const { param, body } = require('express-validator')
 const { validate, validateNullOrInt } = require("../middleware/validateMiddleware")
 const validateJWT = require('../middleware/jwtValidationMiddleware')
@@ -19,7 +19,7 @@ router.get("/getFirstOrderComments/:movieId/:number/:offset",
     param("offset").isInt({min:0 ,max:9999999}),
     validate, 
 async (req, res) => {
-    const data = await commentService.getCommentsFirstOrder(
+    const data = await commentsService.getCommentsFirstOrder(
         parseInt(req.params.movieId),
         parseInt(req.params.number),
         parseInt(req.params.offset)
@@ -43,7 +43,7 @@ router.get("/getSecondOrderComments/:movieId/:commentId/:number/:offset",
     param("offset").isInt({min:0 ,max:9999999}),
     validate, 
 async (req, res) => {
-    const data = await commentService.getCommentsSecondOrder(
+    const data = await commentsService.getCommentsSecondOrder(
         parseInt(req.params.movieId),
         parseInt(req.params.commentId),
         parseInt(req.params.number),
@@ -72,7 +72,7 @@ router.post("/:userId/:movieId",
     validate, 
     validateJWT,
 async (req, res) => {
-    await commentService.postComment(
+    await commentsService.postComment(
         req.params.userId,
         parseInt(req.params.movieId),
         req.body

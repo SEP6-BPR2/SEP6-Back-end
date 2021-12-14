@@ -23,21 +23,15 @@ function initializeMiddleware(app){
     app.use(cors())
     app.use(express.json())
     app.use(require("./middleware/errorMiddleware"))
-    // app.use(require('./middleware/exampleMiddleware')) 
     if(process.env.redis){
         app.use(require('./middleware/redisMiddleware').redisGet) 
     }
 
 }
 
-function initializeFirebaseAdmin(){
-    require("./models/connections/firebaseAdminConnection")
-}
-
 const startServer = () => {
     const app = express()
 
-    initializeFirebaseAdmin(app)
     initializeMiddleware(app)
     initializeRoutes(app)
     

@@ -9,6 +9,7 @@ const validateJWT = require('../middleware/jwtValidationMiddleware')
  * Register user in the database
  * @param userId - string, id of the user, based on what firebase gives
  * @param nickname - string, name of the user NOT ACTUAL NAME OF USER
+ * @body posterURL - string, name of the user NOT ACTUAL NAME OF USER
  *
  * @example - POST {BaseURL}/users/register/123456/rokasbarasa1
  */
