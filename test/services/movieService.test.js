@@ -92,8 +92,8 @@ describe("Movie service testing", () => {
                             Genre: "genre, genre1",
                             Director: "director, director1",
                             Actors: "actor, actor1",
-                            rating: "6.0",
-                            votes: "45000",
+                            imdbRating: "6.0",
+                            imdbVotes: "45000",
                             Runtime: "8 min",
                         }
                     )
@@ -123,8 +123,8 @@ describe("Movie service testing", () => {
                             Genre: "genre, genre1",
                             Director: "director, director1",
                             Actors: "actor, actor1",
-                            rating: "dfs",
-                            votes: "dsfs",
+                            imdbRating: "dfs",
+                            imdbVotes: "dsfs",
                             Runtime: "N/A",
                         }
                     )

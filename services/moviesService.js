@@ -100,11 +100,11 @@ module.exports.getMoreDataForMovieFromThirdParty = async (movieId) => {
     const body = await response.text()
     const object = JSON.parse(body)
 
-    let votes = object.votes.replace(',', '')
+    let votes = object.imdbVotes.replace(',', '')
     votes = (votes != null && !isNaN(parseInt(votes)))? parseInt(votes) : 0
-    const rating = (object.rating != null && !isNaN(parseFloat(object.rating)))? parseFloat(object.rating) : 0.0
+    const rating = (object.imdbRating != null && !isNaN(parseFloat(object.imdbRating)))? parseFloat(object.imdbRating) : 0.0
     const runtime = object.Runtime != "N/A"? object.Runtime : "0 min"
-
+    
     return {
         description: object.Plot,
         posterURL: object.Poster,
@@ -154,11 +154,16 @@ module.exports.updateDatabaseMovie = async (movie) => {
         const genreInDb = await moviesModel.getGenreByName(movie.genres[i])
 
         if(genreInDb.length == 0){
+
             const genreInserted = await moviesModel.insertGenre(movie.genres[i])
             
             await moviesModel.insertMovieToGenre(movie.id, genreInserted.insertId)
         }else{
-            await moviesModel.insertMovieToGenre(movie.id, genreInDb[0].genreId)
+            const movieToGenre = await moviesModel.getMovieToGenre(movie.id, genreInDb[0].genreId)
+            
+            if(movieToGenre.length == 0){
+                await moviesModel.insertMovieToGenre(movie.id, genreInDb[0].genreId)
+            }
         }
     }
 
@@ -176,9 +181,11 @@ module.exports.updateDatabaseMovie = async (movie) => {
             await moviesModel.insertMovieToPerson(movie.id, personInserted.insertId, 1)
 
         }else{
-
-            await moviesModel.insertMovieToPerson(movie.id, personInDb[0].personId, 1)
-
+            const movieToPerson = await moviesModel.getMovieToPerson(movie.id, personInDb[0].personId, 1)
+            
+            if(movieToPerson.length == 0){
+                await moviesModel.insertMovieToPerson(movie.id, personInDb[0].personId, 1)
+            }
         }
     }
 
@@ -198,7 +205,12 @@ module.exports.updateDatabaseMovie = async (movie) => {
             await moviesModel.insertMovieToPerson(movie.id, directorInserted.insertId, 2)
 
         }else{
-            await moviesModel.insertMovieToPerson(movie.id, directorInDb[0].personId, 2)
+            const movieToPerson = await moviesModel.getMovieToPerson(movie.id, directorInDb[0].personId, 2)
+            
+            if(movieToPerson.length == 0){
+                await moviesModel.insertMovieToPerson(movie.id, directorInDb[0].personId, 2)
+            }
+            
         }
     }
 

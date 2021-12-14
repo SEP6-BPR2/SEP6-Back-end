@@ -208,3 +208,21 @@ module.exports.updatePerson = async (person) => {
         ]
     ) 
 }
+
+module.exports.getMovieToPerson = async (movieId, personId, roleId) => {
+    return mysql.query(
+        "SELECT * " +
+        "FROM movieToPerson " +
+        "WHERE movieId = ? AND personId = ? AND roleId = ? ",
+        [movieId, personId, roleId]
+    ) 
+}
+
+module.exports.getMovieToGenre = async (movieId, genreId) => {
+    return mysql.query(
+        "SELECT * " +
+        "FROM movieToGenre " +
+        "WHERE movieId = ? AND genreId = ? ",
+        [movieId, genreId]
+    ) 
+}
