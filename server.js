@@ -5,7 +5,6 @@ const helmet = require("helmet");
 
 // Routes that contain the endpoints
 function initializeRoutes(app){
-    app.use("/example", require("./apis/example")) 
     app.use("/movies", require("./apis/movies")) 
     app.use("/genres", require("./apis/genres")) 
     app.use("/favorites", require("./apis/favorites")) 
@@ -22,11 +21,11 @@ function initializeMiddleware(app){
     app.use(helmet())
     app.use(cors())
     app.use(express.json())
-    app.use(require("./middleware/errorMiddleware"))
+    // app.use(require("./middleware/errorMiddleware"))
     if(process.env.redis){
         app.use(require('./middleware/redisMiddleware').redisGet) 
     }
-
+    app.use(require("./middleware/loggingMiddleware"))
 }
 
 const startServer = () => {

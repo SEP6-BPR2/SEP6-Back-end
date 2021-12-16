@@ -10,10 +10,10 @@ module.exports.insertUser = async (id, nickname, photoURL) => {
 module.exports.updateUser = async (id, nickname, photoURL) => {
     return mysql.query(
         "UPDATE appUser " +
-        "SET appUser.nickname = ? " +
-        "WHERE appUser.userId = ? " +
-        "appUser.photoURL = ?",
-        [nickname, id, photoURL]
+        "SET appUser.nickname = ?, " +
+        "appUser.photoURL = ? " +
+        "WHERE appUser.userId = ? ",
+        [nickname, photoURL, id]
     ) 
 }
 
