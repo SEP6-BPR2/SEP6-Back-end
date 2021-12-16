@@ -89,7 +89,6 @@ async (req, res) => {
     ) 
 
     redisSet(req.originalUrl, data) 
-    // redisSet(req.originalUrl + "/" + req.body.movieName, data) 
 
     res.send(data)
 }) 
