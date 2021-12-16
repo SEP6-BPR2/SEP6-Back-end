@@ -6,7 +6,7 @@ module.exports.getFirstOrderCommentsForMovie = async (movieId, number, offset) =
         "FROM movieComment as fc " +
         "INNER JOIN appUser ON fc.userId = appUser.userId " +
         "WHERE fc.movieId = ? " +
-        "LIMIT ?,? ",
+        "ORDER BY commentTime DESC LIMIT ?,?",
         [movieId, offset, number]
     ) 
 }
